@@ -13,7 +13,7 @@ namespace StackOverflow.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasIndex(u => u.Username).IsUnique();
+            modelBuilder.Entity<User>().HasKey(u => u.Username);
 
             modelBuilder.Entity<Question>().HasIndex(u => u.Id).IsUnique();
 

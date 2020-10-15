@@ -13,7 +13,9 @@ namespace StackOverflow.Models
         public bool Opened { get; set; }
         public User Creator { get; set; }
         public DateTime DateCreated { get; set; }
-
+        //if no q's date created
+        //else max(a.dateCreated)
+        public DateTime LastActivity { get; set; }
         public List<Answer> Answers { get; set; }
 
         
