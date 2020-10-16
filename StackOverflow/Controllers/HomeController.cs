@@ -24,7 +24,18 @@ namespace StackOverflow.Controllers
         public async Task<ViewResult> Home()
         {
             var appContext = _context.Questions.Include(q => q.Creator);
-            return View(await appContext.ToListAsync());
+            return View(await appContext
+                .OrderByDescending(x => x.LastActivity)
+                .ToListAsync());
+        }
+
+        public async Task<ViewResult> Search(string searchText)
+        {
+            var appContext = _context.Questions.Include(q => q.Creator);
+            return View("Home",await appContext
+                .Where(x => x.Topic.Contains(searchText))
+                .OrderByDescending(x => x.LastActivity)
+                .ToListAsync());
         }
 
         public IActionResult Privacy()

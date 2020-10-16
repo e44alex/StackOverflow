@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -62,7 +63,7 @@ namespace StackOverflow.Controllers
                     await _context.SaveChangesAsync();
                 }
 
-                return RedirectToAction(nameof(Index), question.Id);
+                return RedirectToAction(nameof(Index), new {id = question.Id});
             }
             catch
             {
@@ -125,11 +126,24 @@ namespace StackOverflow.Controllers
                 {
                     question.Opened = false;
                 }
+
+                user.Rating = await SetUserRatingAsync(user.UserName);
+
+                await _userManager.UpdateAsync(user);
                 await _context.SaveChangesAsync();
             }
 
             return RedirectToActionPermanent(nameof(Index), new {id = questionId});
         }
 
+        private async Task<int?> SetUserRatingAsync(string userName)
+        {
+            var totalQuestion = _context.Questions.Count(x => x.Creator.UserName == userName);
+            var totalAnswers = _context.Answers.Count(x => x.Creator.UserName == userName);
+            var likedAnswers = _context.Answers.Count(x => x.Creator.UserName == userName && x.Users.Count > 0);
+
+            float result =((float)(totalQuestion + likedAnswers)) / (totalAnswers + totalQuestion);
+            return (int?) Math.Round(result*100);
+        }
     }
 }

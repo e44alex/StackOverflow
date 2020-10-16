@@ -21,7 +21,7 @@ namespace StackOverflow.Models
 
             modelBuilder.Entity<Answer>().HasIndex(u => u.Id).IsUnique();
 
-            modelBuilder.Entity<AnswerLiker>().HasOne(u => u.User).WithMany(x => x.Answers);
+            modelBuilder.Entity<AnswerLiker>().HasOne(u => u.User).WithMany(x => x.LikedAnswers);
             modelBuilder.Entity<AnswerLiker>().HasOne(u => u.Answer).WithMany(x => x.Users);
 
             modelBuilder.Entity<IdentityUserLogin<string>>().HasKey(a => a.UserId);

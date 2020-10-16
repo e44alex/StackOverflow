@@ -28,7 +28,7 @@
     <div class="card-header">
         <h2>
             @Model.Topic
-        </h2>     
+        </h2>
     </div>
     <div class="card-body">
         @Model.Body
@@ -46,26 +46,27 @@
         }
         else
         {
-            <p>No answers  yet</p>
+            <p>No answers yet</p>
         }
     </h4>
     <div class="mt-5">
         @foreach (var answer in Model.Answers)
         {
             <div class="card mb-2">
-                <div class="card-header">@answer.Creator.Name @answer.Creator.Surname</div>
+                <div class="card-header">
+                    <a asp-controller="User" asp-action="UserPage" asp-route-id="@answer.Creator.Id">@answer.Creator.Name @answer.Creator.Surname</a>
+                </div>
                 <div class="card-body">@answer.Body</div>
                 <div class="card-footer">
                     <div class="row">
                         <div class="col-sm-9">
                             @answer.DateCreated
+
                         </div>
                         <div class="col-sm-1">
                             @if (User.Identity.IsAuthenticated)
                             {
-                                
                                 <a asp-action="Like" asp-route-id="@answer.Id" asp-route-questionId="@Model.Id" class="btn btn-secondary">Like</a>
-                                
                             }
                         </div>
                         <div class="col-sm-2">
