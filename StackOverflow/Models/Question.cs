@@ -6,7 +6,7 @@ using System.Security.AccessControl;
 
 namespace StackOverflow.Models
 {
-    public class Question : IEnumerable
+    public class Question
     {
         public Guid Id { get; set; }
         [Required]
@@ -22,9 +22,5 @@ namespace StackOverflow.Models
         public DateTime LastActivity { get; set; }
         public List<Answer> Answers { get; set; }
 
-        public IEnumerator GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

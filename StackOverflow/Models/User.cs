@@ -14,7 +14,7 @@ namespace StackOverflow.Models
         public string? Position { get; set; }
         public float? Exerience { get; set; }
 
-        public List<Answer> Answers{ get; set; }
+        public List<AnswerLiker> Answers{ get; set; }
         public List<Question> Questions{ get; set; }
     }
 }

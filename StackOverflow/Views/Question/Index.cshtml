@@ -10,7 +10,18 @@
 <h2>@Model.Topic</h2>
 @* The question *@
 <div>
-    <p>Current user: @userName</p>
+    @if (Model.Opened)
+    {
+        <p>
+            Discussion is opened
+        </p>
+    }
+    else
+    {
+        <p>
+            Discussion closed
+        </p>
+    }
 </div>
 
 <div class="card mb-5">
@@ -46,13 +57,21 @@
                 <div class="card-body">@answer.Body</div>
                 <div class="card-footer">
                     <div class="row">
-                        <div class="col-sm-6">
-                            <h5>@answer.DateCreated</h5>
+                        <div class="col-sm-9">
+                            @answer.DateCreated
                         </div>
-                        <div class="col-sm-6">
-                            <button type="button" class="btn btn-default">
-                                <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> Like
-                            </button>
+                        <div class="col-sm-1">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                
+                                <a asp-action="Like" asp-route-id="@answer.Id" asp-route-questionId="@Model.Id" class="btn btn-secondary">Like</a>
+                                
+                            }
+                        </div>
+                        <div class="col-sm-2">
+                            <p>
+                                @answer.Users.Count() liked this
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -61,14 +80,17 @@
     </div>
 </div>
 
-@* add answer block *@
-<div>
-    <h4>Add your own answer:</h4>
-</div>
-<div>
-    <form asp-action="CreateAnswer" method="post">
-        <input type="text" asp-for="Id" hidden="true"/>
-        <textarea name="Body" class="form-control mb-5" placeholder="Enter your answer"></textarea>
-        <input type="submit" value="Send" class="btn btn-primary"/>
-    </form>
-</div>
+@if (Model.Opened && User.Identity.IsAuthenticated)
+{
+    @* add answer block *@
+    <div>
+        <h4>Add your own answer:</h4>
+    </div>
+    <div>
+        <form asp-action="CreateAnswer" method="post">
+            <input type="text" asp-for="Id" hidden="true"/>
+            <textarea name="Body" class="form-control mb-5" placeholder="Enter your answer"></textarea>
+            <input type="submit" value="Send" class="btn btn-primary"/>
+        </form>
+    </div>
+}

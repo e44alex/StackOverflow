@@ -25,8 +25,11 @@ namespace StackOverflow.Controllers
         public async Task<ViewResult> Index(Guid id)
         {
             var appContext = _context.Questions
-                .Include(q => q.Answers).Include(q => q.Creator);
-            return View(await appContext.FirstOrDefaultAsync(q => q.Id == id));
+                .Include(q => q.Answers)
+                .ThenInclude(q => q.Users)
+                .Include(q => q.Creator);
+            var question = await appContext.FirstOrDefaultAsync(q => q.Id == id);
+            return View(question);
         }
 
         // GET: Question/Create
@@ -36,13 +39,14 @@ namespace StackOverflow.Controllers
             {
                 return Redirect("~/Identity/Account/Register");
             }
+
             return View();
         }
 
         //POST: Question/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind("Topic","Body")] Question question)
+        public async Task<ActionResult> Create([Bind("Topic", "Body")] Question question)
         {
             try
             {
@@ -100,6 +104,31 @@ namespace StackOverflow.Controllers
             {
                 return View();
             }
+        }
+
+
+        public async Task<ActionResult> Like(Guid id, Guid questionId)
+        {
+            var question = await _context.Questions.FindAsync(questionId);
+            var answer = await _context.Answers.Include(a =>a.Users).FirstOrDefaultAsync(a => a.Id == id);
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            if (!answer.Users.Any(u=> u.User.Equals(User)))
+            {
+                answer.Users.Add(new AnswerLiker()
+                {
+                    Id = new Guid(),
+                    User = user,
+                    Answer = answer
+                });
+                if (question.Creator.Equals(user))
+                {
+                    question.Opened = false;
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToActionPermanent(nameof(Index), new {id = questionId});
         }
 
     }
