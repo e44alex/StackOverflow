@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StackOverflow.Models;
@@ -12,37 +13,52 @@ namespace StackOverflow.Controllers
     public class QuestionController : Controller
     {
         private AppDbContext _context;
+        private UserManager<User> _userManager;
 
-        public QuestionController(AppDbContext context)
+        public QuestionController(AppDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
-
-
 
         // GET: Question/Index/5
         public async Task<ViewResult> Index(Guid id)
         {
-            var appContext = _context.Questions.Include(q => q.Answers);
+            var appContext = _context.Questions
+                .Include(q => q.Answers).Include(q => q.Creator);
             return View(await appContext.FirstOrDefaultAsync(q => q.Id == id));
         }
 
         // GET: Question/Create
         public ActionResult Create()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Redirect("~/Identity/Account/Register");
+            }
             return View();
         }
 
-        // POST: Question/Create
+        //POST: Question/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create([Bind("Topic","Body")] Question question)
         {
             try
             {
-                // TODO: Add insert logic here
+                if (question != null)
+                {
+                    question.DateCreated = DateTime.Now;
+                    question.LastActivity = DateTime.Now;
+                    question.Id = new Guid();
+                    question.Creator = await _userManager.FindByNameAsync(User.Identity.Name);
+                    question.Opened = true;
 
-                return RedirectToAction(nameof(Index));
+                    _context.Add(question);
+                    await _context.SaveChangesAsync();
+                }
+
+                return RedirectToAction(nameof(Index), question.Id);
             }
             catch
             {
@@ -50,22 +66,35 @@ namespace StackOverflow.Controllers
             }
         }
 
-        // GET: Question/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: Question/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> CreateAnswer(Guid id, [Bind("Body")] Answer answer)
         {
+            Question question = null;
+
             try
             {
-                // TODO: Add update logic here
+                if (answer != null)
+                {
+                    question = await _context.Questions.FindAsync(id);
 
-                return RedirectToAction(nameof(Index));
+                    answer.DateCreated = DateTime.Now;
+                    answer.Creator = await _userManager.FindByNameAsync(User.Identity.Name);
+                    answer.Id = new Guid();
+
+                    if (question.Answers == null)
+                    {
+                        question.Answers = new List<Answer>();
+                    }
+
+                    question.Answers.Add(answer);
+                    question.LastActivity = DateTime.Now;
+
+                    _context.Add(answer);
+                    await _context.SaveChangesAsync();
+                }
+
+                return RedirectToActionPermanent(nameof(Index), new {id = question.Id});
             }
             catch
             {
@@ -73,27 +102,5 @@ namespace StackOverflow.Controllers
             }
         }
 
-        // GET: Question/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Question/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }

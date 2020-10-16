@@ -4,32 +4,39 @@
     Layout = @Layout;
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title>title</title>
-</head>
-<body>
-<div>
-      @foreach (var question in Model)
-      {
-          <div class="card">
-              <div class="card-header"><a asp-controller="Question" asp-action="Index" asp-route-id="@question.Id">@question.Topic</a> </div>
-              <div class="card-body">
-                  @if (question.Body.Length > 100)
-                  {
-                      @question.Body.Substring(0, 100); 
-                      <p>...</p>
-                    }
-                  else
-                  {
-                      @question.Body
-                  }
-              </div>
-              <div class="card-footer">Created by: <a>@question.Creator.Login</a> on @question.DateCreated</div>
-          </div>
-      }
+<div class="row">
+    <div class="col-lg-6">
+        <h2>Questions</h2>
+    </div>
+    <div class="col-lg-6">
+        <form asp-controller="Question" asp-action="Create" method="get">
+            <input type="submit" value="Ask a question" class="btn-primary"/>
+        </form>
+    </div>
 </div>
-</body>
-</html>
+<div>
+    @foreach (var question in Model)
+    {
+        <div class="card mb-2">
+            <div class="card-header">
+                <a asp-controller="Question" asp-action="Index" asp-route-id="@question.Id">
+                    <h2>@question.Topic</h2>
+                </a>
+            </div>
+            <div class="card-body">
+                @if (question.Body.Length > 100)
+                {
+                    @question.Body.Substring(0, 100)
+                    ;
+                    <p>...</p>
+                }
+                else
+                {
+                    @question.Body
+                }
+            </div>
+            <div class="card-footer">Created by: <a>@question.Creator.Name @question.Creator.Surname</a> on @question.DateCreated</div>
+        </div>
+    }
+</div>
+
