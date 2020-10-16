@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StackOverflow.Models;
 
 namespace StackOverflow.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201015125340_migration4")]
+    partial class migration4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -140,7 +142,7 @@ namespace StackOverflow.Migrations
                     b.Property<string>("Body")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CreatorId")
+                    b.Property<string>("CreatorUserName")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("DateCreated")
@@ -154,7 +156,7 @@ namespace StackOverflow.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatorId");
+                    b.HasIndex("CreatorUserName");
 
                     b.HasIndex("Id")
                         .IsUnique();
@@ -173,7 +175,7 @@ namespace StackOverflow.Migrations
                     b.Property<string>("Body")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CreatorId")
+                    b.Property<string>("CreatorUserName")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("DateCreated")
@@ -190,7 +192,7 @@ namespace StackOverflow.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatorId");
+                    b.HasIndex("CreatorUserName");
 
                     b.HasIndex("Id")
                         .IsUnique();
@@ -200,7 +202,7 @@ namespace StackOverflow.Migrations
 
             modelBuilder.Entity("StackOverflow.Models.User", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("UserName")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
@@ -220,6 +222,9 @@ namespace StackOverflow.Migrations
 
                     b.Property<float?>("Exerience")
                         .HasColumnType("real");
+
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -263,10 +268,7 @@ namespace StackOverflow.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
+                    b.HasKey("UserName");
 
                     b.ToTable("User");
                 });
@@ -275,7 +277,7 @@ namespace StackOverflow.Migrations
                 {
                     b.HasOne("StackOverflow.Models.User", "Creator")
                         .WithMany("Answers")
-                        .HasForeignKey("CreatorId");
+                        .HasForeignKey("CreatorUserName");
 
                     b.HasOne("StackOverflow.Models.Question", null)
                         .WithMany("Answers")
@@ -286,7 +288,7 @@ namespace StackOverflow.Migrations
                 {
                     b.HasOne("StackOverflow.Models.User", "Creator")
                         .WithMany("Questions")
-                        .HasForeignKey("CreatorId");
+                        .HasForeignKey("CreatorUserName");
                 });
 #pragma warning restore 612, 618
         }

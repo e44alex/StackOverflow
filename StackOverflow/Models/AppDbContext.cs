@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace StackOverflow.Models
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<User>
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Answer> Answers { get; set; }
@@ -13,11 +15,15 @@ namespace StackOverflow.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasKey(u => u.Username);
+            modelBuilder.Entity<User>().HasKey(u => u.Id);
 
             modelBuilder.Entity<Question>().HasIndex(u => u.Id).IsUnique();
 
             modelBuilder.Entity<Answer>().HasIndex(u => u.Id).IsUnique();
+
+            modelBuilder.Entity<IdentityUserLogin<string>>().HasKey(a => a.UserId);
+            modelBuilder.Entity<IdentityUserRole<string>>().HasKey(a => a.RoleId);
+            modelBuilder.Entity<IdentityUserToken<string>>().HasKey(a => a.UserId);
         }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Security.AccessControl;
 
 namespace StackOverflow.Models
 {
-    public class Question
+    public class Question : IEnumerable
     {
         public Guid Id { get; set; }
         public string Topic { get; set; }
@@ -18,6 +19,10 @@ namespace StackOverflow.Models
         public DateTime LastActivity { get; set; }
         public List<Answer> Answers { get; set; }
 
-        
+
+        public IEnumerator GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StackOverflow.Models;
 
 namespace StackOverflow.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201015122603_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,7 +61,7 @@ namespace StackOverflow.Migrations
                     b.ToTable("RoleClaims");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.UserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -80,7 +82,7 @@ namespace StackOverflow.Migrations
                     b.ToTable("UserClaims");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.UserLogin<string>", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -99,7 +101,7 @@ namespace StackOverflow.Migrations
                     b.ToTable("UserLogins");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.UserRole<string>", b =>
                 {
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
@@ -112,7 +114,7 @@ namespace StackOverflow.Migrations
                     b.ToTable("UserRoles");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.UserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -140,7 +142,7 @@ namespace StackOverflow.Migrations
                     b.Property<string>("Body")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CreatorId")
+                    b.Property<string>("CreatorLogin")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("DateCreated")
@@ -154,7 +156,7 @@ namespace StackOverflow.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatorId");
+                    b.HasIndex("CreatorLogin");
 
                     b.HasIndex("Id")
                         .IsUnique();
@@ -173,7 +175,7 @@ namespace StackOverflow.Migrations
                     b.Property<string>("Body")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CreatorId")
+                    b.Property<string>("CreatorLogin")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("DateCreated")
@@ -190,7 +192,7 @@ namespace StackOverflow.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatorId");
+                    b.HasIndex("CreatorLogin");
 
                     b.HasIndex("Id")
                         .IsUnique();
@@ -200,7 +202,7 @@ namespace StackOverflow.Migrations
 
             modelBuilder.Entity("StackOverflow.Models.User", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("Login")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
@@ -218,17 +220,14 @@ namespace StackOverflow.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<float?>("Exerience")
-                        .HasColumnType("real");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("Login")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -248,10 +247,7 @@ namespace StackOverflow.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Position")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<float?>("Rating")
+                    b.Property<float>("Rating")
                         .HasColumnType("real");
 
                     b.Property<string>("SecurityStamp")
@@ -266,7 +262,7 @@ namespace StackOverflow.Migrations
                     b.Property<string>("UserName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Login");
 
                     b.ToTable("User");
                 });
@@ -275,7 +271,7 @@ namespace StackOverflow.Migrations
                 {
                     b.HasOne("StackOverflow.Models.User", "Creator")
                         .WithMany("Answers")
-                        .HasForeignKey("CreatorId");
+                        .HasForeignKey("CreatorLogin");
 
                     b.HasOne("StackOverflow.Models.Question", null)
                         .WithMany("Answers")
@@ -286,7 +282,7 @@ namespace StackOverflow.Migrations
                 {
                     b.HasOne("StackOverflow.Models.User", "Creator")
                         .WithMany("Questions")
-                        .HasForeignKey("CreatorId");
+                        .HasForeignKey("CreatorLogin");
                 });
 #pragma warning restore 612, 618
         }

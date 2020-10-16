@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using StackOverflow.Models;
 
@@ -12,15 +13,18 @@ namespace StackOverflow.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly AppDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, AppDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<ViewResult> Home()
         {
-            return View();
+            var appContext = _context.Questions.Include(q => q.Creator);
+            return View(await appContext.ToListAsync());
         }
 
         public IActionResult Privacy()
