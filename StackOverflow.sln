@@ -3,7 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29418.71
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackOverflow", "StackOverflow\StackOverflow.csproj", "{E5A3D70A-A413-4299-B407-DEC2EB49A4D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StackOverflow", "StackOverflow\StackOverflow.csproj", "{E5A3D70A-A413-4299-B407-DEC2EB49A4D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackOverflowWebApi", "StackOverflowWebApi\StackOverflowWebApi.csproj", "{BBFFB44D-5E99-488E-8AD7-3E1A89994BF1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E5A3D70A-A413-4299-B407-DEC2EB49A4D7} = {E5A3D70A-A413-4299-B407-DEC2EB49A4D7}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +20,10 @@ Global
 		{E5A3D70A-A413-4299-B407-DEC2EB49A4D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5A3D70A-A413-4299-B407-DEC2EB49A4D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5A3D70A-A413-4299-B407-DEC2EB49A4D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBFFB44D-5E99-488E-8AD7-3E1A89994BF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBFFB44D-5E99-488E-8AD7-3E1A89994BF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBFFB44D-5E99-488E-8AD7-3E1A89994BF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBFFB44D-5E99-488E-8AD7-3E1A89994BF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
