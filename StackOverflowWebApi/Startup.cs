@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using StackOverflowWebApi.Models;
+using StackOverflowWebApi.Services;
 
 namespace StackOverflowWebApi
 {
@@ -39,6 +40,11 @@ namespace StackOverflowWebApi
             services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddHttpClient<IApiClient, ApiClient>(client =>
+            {
+                client.BaseAddress = new Uri(Configuration["serviceUrl"]);
             });
         }
 

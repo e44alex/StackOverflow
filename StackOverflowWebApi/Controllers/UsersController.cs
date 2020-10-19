@@ -41,6 +41,21 @@ namespace StackOverflowWebApi.Controllers
             return user;
         }
 
+        // GET: api/Users/byName/username
+        [HttpGet("{username}")]
+        public async Task<ActionResult<User>> GetUser(string username)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Login == username);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return user;
+        }
+
+
         // PUT: api/Users/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.

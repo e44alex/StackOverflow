@@ -41,6 +41,16 @@ namespace StackOverflowWebApi.Controllers
             return answer;
         }
 
+        // GET: api/Answers/5
+        [HttpGet("byQuestion/{id}")]
+        public async Task<List<Answer>> GetAnswersByQuestion(Guid id)
+        {
+            return await _context.Answers
+                .Include(a =>a.Question)
+                .Where(a => a.Question.Id == id)
+                .ToListAsync();
+        }
+
         // PUT: api/Answers/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
