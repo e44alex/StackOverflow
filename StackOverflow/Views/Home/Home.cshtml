@@ -26,8 +26,7 @@
             <div class="card-body">
                 @if (question.Body.Length > 100)
                 {
-                    @question.Body.Substring(0, 100)
-                    ;
+                    @question.Body.Substring(0, 100);
                     <p>...</p>
                 }
                 else

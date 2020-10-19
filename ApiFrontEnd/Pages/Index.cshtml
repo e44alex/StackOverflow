@@ -1,0 +1,30 @@
+﻿@page
+@model ApiFrontEnd.IndexModel
+@{
+}
+
+<h1>Questions</h1>
+
+@foreach (var question in Model.Questions)
+{
+    <div class="card mb-2">
+        <div class="card-header">
+            <a asp-controller="Question" asp-action="Index" asp-route-id="@question.Id">
+                <h2>@question.Topic</h2>
+            </a>
+        </div>
+        <div class="card-body">
+            @if (question.Body.Length > 100)
+            {
+                @question.Body.Substring(0, 100)
+                ;
+                <p>...</p>
+            }
+            else
+            {
+                @question.Body
+            }
+        </div>
+        <div class="card-footer">Created by: <a>@question.Creator.Name @question.Creator.Surname</a> on @question.DateCreated</div>
+    </div>
+}

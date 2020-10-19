@@ -12,6 +12,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StackOverflowWebApi", "Stac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackOverflowTests", "StackOverflowTests\StackOverflowTests.csproj", "{0CBE83D2-5449-4E1B-BDC0-3E570C5B0845}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiFrontEnd", "ApiFrontEnd\ApiFrontEnd.csproj", "{D2B250CD-79B1-4251-ADA2-0B9E91A84668}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,10 @@ Global
 		{0CBE83D2-5449-4E1B-BDC0-3E570C5B0845}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CBE83D2-5449-4E1B-BDC0-3E570C5B0845}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CBE83D2-5449-4E1B-BDC0-3E570C5B0845}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2B250CD-79B1-4251-ADA2-0B9E91A84668}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2B250CD-79B1-4251-ADA2-0B9E91A84668}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2B250CD-79B1-4251-ADA2-0B9E91A84668}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2B250CD-79B1-4251-ADA2-0B9E91A84668}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

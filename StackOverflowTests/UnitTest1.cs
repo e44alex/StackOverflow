@@ -1,4 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
@@ -26,7 +30,14 @@ namespace StackOverflowTests
         public void Test_QuestionsController_GetQuestions_ReturnsListOfQuestions()
         {
             var service = new Mock<AppDbContext>();
+            service.Setup( context => context.Questions.ToList())
+                .Returns(() => new List<Question>());
+
             QuestionsController controller = new QuestionsController(service.Object);
+
+            var result = controller.GetQuestions();
+
+            Assert.IsNotEmpty(result.Result.Value);
         }
     }
 }
