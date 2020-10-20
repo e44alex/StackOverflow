@@ -1,0 +1,94 @@
+﻿@page
+@model ApiFrontEnd.Pages.QuestionModel
+@{
+    Layout = "_Layout";
+}
+
+<h2>@Model.Question.Topic</h2>
+@* The question *@
+<div>
+    @if (Model.Question.Opened)
+    {
+        <p>
+            Discussion is opened
+        </p>
+    }
+    else
+    {
+        <p>
+            Discussion closed
+        </p>
+    }
+</div>
+
+<div class="card mb-5">
+    <div class="card-header">
+        <h2>
+            @Model.Question.Topic
+        </h2>
+    </div>
+    <div class="card-body">
+        @Model.Question.Body
+    </div>
+    <div class="card-footer">Created by: <a>@Model.Question.Creator.Name @Model.Question.Creator.Surname</a> on @Model.Question.DateCreated</div>
+</div>
+
+@* list of answers *@
+
+<div>
+    <h4>
+        @if (@Model.Question.Answers != null)
+        {
+            <p>@Model.Question.Answers.Count answers</p>
+        }
+        else
+        {
+            <p>No answers yet</p>
+        }
+    </h4>
+    <div class="mt-5">
+        @foreach (var answer in Model.Question.Answers)
+        {
+            <div class="card mb-2">
+                <div class="card-header">
+                    <a asp-page="User" asp-route-id="@answer.Creator.Id">@answer.Creator.Name @answer.Creator.Surname</a>
+                </div>
+                <div class="card-body">@answer.Body</div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-sm-9">
+                            @answer.DateCreated
+
+                        </div>
+                        <div class="col-sm-1">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <a class="btn btn-secondary">Like</a>
+                            }
+                        </div>
+                        <div class="col-sm-2">
+                            <p>
+                                @answer.Users.Count() liked this
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@*@if (Model.Question.Opened && User.Identity.IsAuthenticated)
+{*@
+    @* add answer block *@
+    <div>
+        <h4>Add your own answer:</h4>
+    </div>
+    <div>
+        <form method="post">
+            <input type="text"  hidden="true" />
+            <textarea name="Body" class="form-control mb-5" placeholder="Enter your answer"></textarea>
+            <input type="submit" value="Send" class="btn btn-primary" />
+        </form>
+    </div>
+}

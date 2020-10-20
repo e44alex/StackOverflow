@@ -10,9 +10,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StackOverflowWebApi", "Stac
 		{E5A3D70A-A413-4299-B407-DEC2EB49A4D7} = {E5A3D70A-A413-4299-B407-DEC2EB49A4D7}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackOverflowTests", "StackOverflowTests\StackOverflowTests.csproj", "{0CBE83D2-5449-4E1B-BDC0-3E570C5B0845}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StackOverflowTests", "StackOverflowTests\StackOverflowTests.csproj", "{0CBE83D2-5449-4E1B-BDC0-3E570C5B0845}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiFrontEnd", "ApiFrontEnd\ApiFrontEnd.csproj", "{D2B250CD-79B1-4251-ADA2-0B9E91A84668}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiFrontEnd", "ApiFrontEnd\ApiFrontEnd.csproj", "{D2B250CD-79B1-4251-ADA2-0B9E91A84668}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

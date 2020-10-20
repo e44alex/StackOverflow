@@ -25,6 +25,15 @@ namespace StackOverflowWebApi.Services
             return await response.Content.ReadAsAsync<List<Question>>();
         }
 
+        public async Task<Question> GetQuestionAsync(Guid id)
+        {
+            var response = await _httpClient.GetAsync($"/api/Questions/{id}");
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsAsync<Question>();
+        }
+
         public async Task<Answer> GetAnswerAsync(Guid answerId)
         {
             var response = await _httpClient.GetAsync($"/api/Answers/{answerId}");

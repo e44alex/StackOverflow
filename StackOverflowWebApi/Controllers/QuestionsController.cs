@@ -24,14 +24,18 @@ namespace StackOverflowWebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Question>>> GetQuestions()
         {
-            return await _context.Questions.ToListAsync();
+            return await _context.Questions.Include(x => x.Creator).ToListAsync();
         }
 
         // GET: api/Questions/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Question>> GetQuestion(Guid id)
         {
-            var question = await _context.Questions.FindAsync(id);
+            var question = await _context.Questions
+                .Include(x => x.Creator)
+                .Include(x => x.Answers)
+                .ThenInclude(x => x.Users)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (question == null)
             {

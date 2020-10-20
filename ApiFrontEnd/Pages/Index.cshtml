@@ -1,6 +1,7 @@
 ﻿@page
 @model ApiFrontEnd.IndexModel
 @{
+    Layout = "_Layout";
 }
 
 <h1>Questions</h1>
@@ -9,7 +10,7 @@
 {
     <div class="card mb-2">
         <div class="card-header">
-            <a asp-controller="Question" asp-action="Index" asp-route-id="@question.Id">
+            <a asp-page="./Question" asp-route-id="@question.Id">
                 <h2>@question.Topic</h2>
             </a>
         </div>
@@ -25,6 +26,6 @@
                 @question.Body
             }
         </div>
-        <div class="card-footer">Created by: <a>@question.Creator.Name @question.Creator.Surname</a> on @question.DateCreated</div>
+        <div class="card-footer">Created by: <a >@question.Creator.Name @question.Creator.Surname</a> on @question.DateCreated</div>
     </div>
 }
