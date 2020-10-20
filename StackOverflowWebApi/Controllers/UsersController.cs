@@ -42,7 +42,7 @@ namespace StackOverflowWebApi.Controllers
         }
 
         // GET: api/Users/byName/username
-        [HttpGet("{username}")]
+        [HttpGet("byName/{username}")]
         public async Task<ActionResult<User>> GetUser(string username)
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Login == username);

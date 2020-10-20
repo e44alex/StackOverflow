@@ -9,20 +9,21 @@ using StackOverflowWebApi.Services;
 
 namespace ApiFrontEnd.Pages
 {
-    public class QuestionModel : PageModel
+    public class UserModel : PageModel
     {
         private readonly IApiClient _apiClient;
+        
+        public User ModelUser { get; set; }
 
-        public Question Question { get; set; }
 
-        public QuestionModel(IApiClient apiClient)
+        public UserModel(IApiClient apiClient)
         {
             _apiClient = apiClient;
         }
 
-        public async Task OnGet(Guid id)
+        public async Task OnGet(string username)
         {
-            Question = await _apiClient.GetQuestionAsync(id);
+            ModelUser = await _apiClient.GetUserDataAsync(username);
         }
     }
 }

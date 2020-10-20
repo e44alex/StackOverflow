@@ -108,7 +108,7 @@ namespace StackOverflowWebApi.Services
             return true;
         }
 
-        public async Task<User> GetUserData(string username)
+        public async Task<User> GetUserDataAsync(string username)
         {
             var response = await _httpClient.GetAsync($"/api/Users/byName/{username}");
 

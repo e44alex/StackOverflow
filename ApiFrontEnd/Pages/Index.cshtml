@@ -26,6 +26,6 @@
                 @question.Body
             }
         </div>
-        <div class="card-footer">Created by: <a >@question.Creator.Name @question.Creator.Surname</a> on @question.DateCreated</div>
+        <div class="card-footer">Created by: <a asp-page="./User" asp-route-username="@question.Creator.Login">@question.Creator.Name @question.Creator.Surname</a> on @question.DateCreated</div>
     </div>
 }
