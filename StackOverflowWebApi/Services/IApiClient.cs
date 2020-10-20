@@ -16,5 +16,7 @@ namespace StackOverflowWebApi.Services
         Task<bool> UpdateAnswerAsync(Answer answer);
         Task<bool> UpdateQuestionAsync(Question question);
         Task<User> GetUserDataAsync(string username);
+        Task<Guid> GetUserIdAsync(string username);
+
     }
 }

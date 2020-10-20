@@ -37,7 +37,7 @@
 
 <div>
     <h4>
-        @if (@Model.Question.Answers != null)
+        @if (@Model.Question.Answers != null && @Model.Question.Answers.Count > 0)
         {
             <p>@Model.Question.Answers.Count answers</p>
         }
@@ -86,9 +86,9 @@
     </div>
     <div>
         <form method="post">
-            <input type="text"  hidden="true" />
+            <input type="text"  hidden="true" name="Question.Id"/>
             <textarea name="Body" class="form-control mb-5" placeholder="Enter your answer"></textarea>
             <input type="submit" value="Send" class="btn btn-primary" />
         </form>
     </div>
-}
+@*  *@

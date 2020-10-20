@@ -116,5 +116,14 @@ namespace StackOverflowWebApi.Services
 
             return await response.Content.ReadAsAsync<User>();
         }
+
+        public async Task<Guid> GetUserIdAsync(string username)
+        {
+            var response = await _httpClient.GetAsync($"/api/Users/getId/{username}");
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsAsync<Guid>();
+        }
     }
 }

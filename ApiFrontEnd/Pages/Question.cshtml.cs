@@ -24,5 +24,20 @@ namespace ApiFrontEnd.Pages
         {
             Question = await _apiClient.GetQuestionAsync(id);
         }
+
+        public async Task<RedirectResult> OnPost(Answer answer)
+        {
+            answer.Creator = new User()
+            {
+                Id = await _apiClient.GetUserIdAsync("e44alex")
+            };
+            answer.DateCreated = DateTime.Now;
+            answer.Question = await _apiClient.GetQuestionAsync(answer.Id);
+            answer.Id = Guid.NewGuid();
+
+            await _apiClient.AddAnswerAsync(answer);
+
+            return Redirect($"/Question?id={answer.Question.Id}");
+        }
     }
 }
