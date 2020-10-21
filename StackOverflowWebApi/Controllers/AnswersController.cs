@@ -92,8 +92,11 @@ namespace StackOverflowWebApi.Controllers
             var question = await _context.Questions.FindAsync(answer.Question.Id);
             question.LastActivity= DateTime.Now;
 
-            answer.Question = question;
+            answer.DateCreated = DateTime.Now;
+            answer.Question = await _context.Questions.FirstOrDefaultAsync(q => q.Id == answer.Id);
+            answer.Id = Guid.NewGuid();
             answer.Creator = await _context.FindAsync<User>(answer.Creator.Id);
+            
             _context.Answers.Add(answer);
             await _context.SaveChangesAsync();
 

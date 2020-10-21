@@ -31,11 +31,29 @@ namespace ApiFrontEnd.Pages
             {
                 Id = await _apiClient.GetUserIdAsync("e44alex")
             };
-            answer.DateCreated = DateTime.Now;
-            answer.Question = await _apiClient.GetQuestionAsync(answer.Id);
-            answer.Id = Guid.NewGuid();
+
 
             await _apiClient.AddAnswerAsync(answer);
+
+            return Redirect($"/Question?id={answer.Question.Id}");
+        }
+
+        public async Task<RedirectResult> OnPostLike(Answer answer)
+        {
+            var currentUser = await _apiClient.GetUserDataAsync("e44alex");
+
+            if (!answer.Users.Any(u => u.User.Equals(User)))
+            {
+                answer.Users.Add(new AnswerLiker()
+                {
+                    Id = Guid.NewGuid(),
+                    Answer = answer,
+                    User = currentUser
+
+                });
+            }
+
+            await _apiClient.UpdateAnswerAsync(answer);
 
             return Redirect($"/Question?id={answer.Question.Id}");
         }

@@ -61,10 +61,10 @@
 
                         </div>
                         <div class="col-sm-1">
-                            @if (User.Identity.IsAuthenticated)
-                            {
-                                <a class="btn btn-secondary">Like</a>
-                            }
+                            @*@if (User.Identity.IsAuthenticated)
+                            {*@
+                                <a asp-page-handler="like" class="btn btn-secondary">Like</a>
+                            @*}*@
                         </div>
                         <div class="col-sm-2">
                             <p>

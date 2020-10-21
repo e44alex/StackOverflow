@@ -111,7 +111,10 @@ namespace StackOverflow.Controllers
         public async Task<ActionResult> Like(Guid id, Guid questionId)
         {
             var question = await _context.Questions.FindAsync(questionId);
-            var answer = await _context.Answers.Include(a =>a.Users).FirstOrDefaultAsync(a => a.Id == id);
+            var answer = await _context.Answers
+                .Include(a =>a.Users)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
 
             if (!answer.Users.Any(u=> u.User.Equals(User)))

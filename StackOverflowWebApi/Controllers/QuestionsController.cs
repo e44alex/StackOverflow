@@ -83,10 +83,13 @@ namespace StackOverflowWebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Question>> PostQuestion(Question question)
         {
-            var user = _context.Users.Find(question.Creator.Id);
+            var user = await _context.Users.FindAsync(question.Creator.Id);
 
             question.Creator = user;
-
+            question.Id = Guid.NewGuid();
+            question.LastActivity = DateTime.Now;
+            question.Opened = true;
+            question.DateCreated = DateTime.Now;
             await _context.AddAsync(question);
             await _context.SaveChangesAsync();
 

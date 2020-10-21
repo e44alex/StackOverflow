@@ -28,11 +28,9 @@ namespace ApiFrontEnd.Pages
             {
                 Id = await _apiClient.GetUserIdAsync("e44alex")
             };
-            question.Id = Guid.NewGuid();
+            
             question.Creator = user;
-            question.LastActivity = DateTime.Now;
-            question.Opened = true;
-            question.DateCreated = DateTime.Now;
+            
 
             await _apiClient.AddQuestionAsync(question);
 
