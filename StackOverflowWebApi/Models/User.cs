@@ -20,5 +20,6 @@ namespace StackOverflowWebApi.Models
         public List<AnswerLiker> LikedAnswers{ get; set; }
         public List<Question> Questions{ get; set; }
         public string? Bio { get; set; }
+        public string PasswordHash { get; set; }
     }
 }
