@@ -54,14 +54,17 @@ namespace StackOverflowWebApi.Controllers
 
             HttpContext.Response.Headers.Append("token", "Bearer " + encodedJwt);
 
+            HttpContext.Response.Cookies.Append("token", "Bearer " + encodedJwt);
+            HttpContext.Response.Cookies.Append("username", username);
+
+
             return Json(response);
         }
 
-
+        [Authorize]
         [HttpGet("/checkLogin")]
         public IActionResult CheckLogin()
         {
-            
             return Ok("You are authorized");
         }
 

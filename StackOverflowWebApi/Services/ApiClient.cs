@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.IdentityModel.JsonWebTokens;
 using StackOverflowWebApi.Models;
 
@@ -132,7 +133,7 @@ namespace StackOverflowWebApi.Services
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/token?username=e44alex&password=admin");
+                var response = await _httpClient.GetAsync($"/token?username={username}&password={password}");
 
                 response.EnsureSuccessStatusCode();
 
@@ -148,6 +149,9 @@ namespace StackOverflowWebApi.Services
                 var response2 = await _httpClient.GetAsync($"/checkLogin");
 
                 response2.EnsureSuccessStatusCode();
+
+                
+
             }
             catch (Exception e)
             {

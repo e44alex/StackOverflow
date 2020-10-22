@@ -1,37 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text.Encodings.Web;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using StackOverflowWebApi.Models;
+using StackOverflowWebApi.Services;
 
 namespace StackOverflow.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class LoginModel : PageModel
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
-        private readonly ILogger<LoginModel> _logger;
-        private readonly IEmailSender _emailSender;
-
-        public LoginModel(SignInManager<User> signInManager, 
-            ILogger<LoginModel> logger,
-            UserManager<User> userManager,
-            IEmailSender emailSender)
+        private readonly IApiClient _apiClient;
+        public LoginModel(IApiClient apiClient)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _emailSender = emailSender;
-            _logger = logger;
+            _apiClient = apiClient;
         }
 
         [BindProperty]
@@ -47,8 +33,8 @@ namespace StackOverflow.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [EmailAddress]
-            public string Email { get; set; }
+            
+            public string Username { get; set; }
 
             [Required]
             [DataType(DataType.Password)]
@@ -62,10 +48,19 @@ namespace StackOverflow.Areas.Identity.Pages.Account
         {
         }
 
-        //public async Task<IActionResult> OnPostAsync(string returnUrl = null)
-        //{
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        {
+            if (await _apiClient.Authenticate(Input.Username, Input.Password))
+            {
+                HttpContext.User = new GenericPrincipal(new ClaimsIdentity(Input.Username), new []{"user"});
 
-        //}
+                IIdentity identity = User.Identity;
+
+            }
+
+            return Redirect("~/Account/Login");
+
+        }
 
 
     }

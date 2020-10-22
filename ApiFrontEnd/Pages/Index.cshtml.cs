@@ -25,8 +25,6 @@ namespace ApiFrontEnd
 
         public async Task OnGet()
         {
-            Authenticated = await _apiClient.Authenticate("e44alex", "admin");
-            
             Questions = await _apiClient.GetQuestionsAsync();
         }
     }
