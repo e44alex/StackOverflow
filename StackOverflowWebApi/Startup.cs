@@ -46,7 +46,7 @@ namespace StackOverflowWebApi
                     ValidIssuer = AuthOptions.ISSUER,
                     ValidateAudience = true,
                     ValidAudience = AuthOptions.AUDIENCE,
-                    ValidateLifetime = true,
+                    ValidateLifetime = false,
                     IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
                     ValidateIssuerSigningKey = true
                 };

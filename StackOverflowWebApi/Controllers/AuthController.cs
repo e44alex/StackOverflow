@@ -15,11 +15,13 @@ namespace StackOverflowWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController : Controller
+    public class AuthController : Controller
     {
+        private static Dictionary<string, string> _givenTokens = new Dictionary<string, string>();
+
         private readonly AppDbContext _context;
 
-        public ValuesController(AppDbContext context)
+        public AuthController(AppDbContext context)
         {
             _context = context;
         }
@@ -50,7 +52,31 @@ namespace StackOverflowWebApi.Controllers
                 username = identity.Name
             };
 
+            _givenTokens.Add(username, encodedJwt);
+
             return Json(response);
+        }
+
+        [HttpGet("/validate")]
+        public IActionResult Validate(string token, string username)
+        {
+            var user = _context.Users.FirstOrDefault(x => x.Login == username);
+            if (user == null)
+            {
+                return BadRequest(new { errorText = "Invalid username or password" });
+            }
+
+            try
+            {
+                if (_givenTokens[username] == token) return Ok();
+            }
+            catch (Exception)
+            {
+                return Unauthorized();
+            }
+
+            return Unauthorized();
+
         }
 
         private ClaimsIdentity GetIdentity(string username, string password)
@@ -59,6 +85,12 @@ namespace StackOverflowWebApi.Controllers
 
             if (user != null)
             {
+                if (String.IsNullOrEmpty(user.PasswordHash))
+                {
+                    user.PasswordHash = HashPassword("admin");
+                    _context.SaveChanges();
+                }
+
                 if (VerifyHashedPassword(user.PasswordHash, password))
                 {
                     var claims = new List<Claim>
@@ -70,6 +102,8 @@ namespace StackOverflowWebApi.Controllers
                     ClaimsIdentity claimsIdentity =
                         new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
                             ClaimsIdentity.DefaultRoleClaimType);
+
+                    return claimsIdentity;
                 }
             }
 
