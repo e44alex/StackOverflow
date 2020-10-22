@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -17,8 +18,6 @@ namespace StackOverflowWebApi.Controllers
     [ApiController]
     public class AuthController : Controller
     {
-        private static Dictionary<string, string> _givenTokens = new Dictionary<string, string>();
-
         private readonly AppDbContext _context;
 
         public AuthController(AppDbContext context)
@@ -26,7 +25,7 @@ namespace StackOverflowWebApi.Controllers
             _context = context;
         }
 
-        [HttpPost("/token")]
+        [HttpGet("/token")]
         public IActionResult Token(string username, string password)
         {
             var identity = GetIdentity(username, password);
@@ -43,7 +42,8 @@ namespace StackOverflowWebApi.Controllers
                 notBefore: now,
                 claims: identity.Claims,
                 expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
-                signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+                signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(),
+                    SecurityAlgorithms.HmacSha256));
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             var response = new
@@ -52,31 +52,17 @@ namespace StackOverflowWebApi.Controllers
                 username = identity.Name
             };
 
-            _givenTokens.Add(username, encodedJwt);
+            HttpContext.Response.Headers.Append("token", "Bearer " + encodedJwt);
 
             return Json(response);
         }
 
-        [HttpGet("/validate")]
-        public IActionResult Validate(string token, string username)
+
+        [HttpGet("/checkLogin")]
+        public IActionResult CheckLogin()
         {
-            var user = _context.Users.FirstOrDefault(x => x.Login == username);
-            if (user == null)
-            {
-                return BadRequest(new { errorText = "Invalid username or password" });
-            }
-
-            try
-            {
-                if (_givenTokens[username] == token) return Ok();
-            }
-            catch (Exception)
-            {
-                return Unauthorized();
-            }
-
-            return Unauthorized();
-
+            
+            return Ok("You are authorized");
         }
 
         private ClaimsIdentity GetIdentity(string username, string password)

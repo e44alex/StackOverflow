@@ -15,6 +15,9 @@ namespace ApiFrontEnd
 
         public List<Question> Questions { get; set; }
 
+        public bool Authenticated { get; set; }
+
+
         public IndexModel(IApiClient apiClient)
         {
             _apiClient = apiClient;
@@ -22,6 +25,8 @@ namespace ApiFrontEnd
 
         public async Task OnGet()
         {
+            Authenticated = await _apiClient.Authenticate("e44alex", "admin");
+            
             Questions = await _apiClient.GetQuestionsAsync();
         }
     }

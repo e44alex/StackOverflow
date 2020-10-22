@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.JsonWebTokens;
 using StackOverflowWebApi.Models;
 
 namespace StackOverflowWebApi.Services
@@ -124,6 +126,35 @@ namespace StackOverflowWebApi.Services
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadAsAsync<Guid>();
+        }
+
+        public async Task<bool> Authenticate(string username, string password)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"/token?username=e44alex&password=admin");
+
+                response.EnsureSuccessStatusCode();
+
+                var headers = response.Headers;
+                string token = "";
+                if (headers.TryGetValues("token", out IEnumerable<string> headerValues))
+                {
+                    token = headerValues.FirstOrDefault();
+                }
+
+                _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer "+ token);
+
+                var response2 = await _httpClient.GetAsync($"/checkLogin");
+
+                response2.EnsureSuccessStatusCode();
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
