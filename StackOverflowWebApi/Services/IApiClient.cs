@@ -19,5 +19,7 @@ namespace StackOverflowWebApi.Services
         Task<Guid> GetUserIdAsync(string username);
         Task<bool> Authenticate(string username, string password);
 
+        Task<bool> UnAuthenticate(string inputUsername);
+        Task<bool> UpdateUserAsync(User user);
     }
 }

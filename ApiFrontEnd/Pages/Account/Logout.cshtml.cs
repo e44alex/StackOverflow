@@ -8,20 +8,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using StackOverflowWebApi.Models;
+using StackOverflowWebApi.Services;
 
 namespace StackOverflow.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class LogoutModel : PageModel
     {
-        private readonly SignInManager<User> _signInManager;
-        private readonly ILogger<LogoutModel> _logger;
-
-        public LogoutModel(SignInManager<User> signInManager, ILogger<LogoutModel> logger)
+        private readonly IApiClient _apiClient;
+        public LogoutModel(IApiClient apiClient)
         {
-            _signInManager = signInManager;
-            _logger = logger;
+            _apiClient = apiClient;
         }
+
 
         public void OnGet()
         {
@@ -29,16 +28,17 @@ namespace StackOverflow.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPost(string returnUrl = null)
         {
-            await _signInManager.SignOutAsync();
-            _logger.LogInformation("User logged out.");
-            if (returnUrl != null)
+            try
             {
-                return LocalRedirect(returnUrl);
+                HttpContext.Response.Cookies.Delete("token");
+                HttpContext.Response.Cookies.Delete("user");
+
             }
-            else
+            catch (Exception)
             {
-                return RedirectToPage();
             }
+
+            return Redirect("~/Account/Login");
         }
     }
 }

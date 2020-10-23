@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.IdentityModel.JsonWebTokens;
 using StackOverflowWebApi.Models;
@@ -144,19 +145,41 @@ namespace StackOverflowWebApi.Services
                     token = headerValues.FirstOrDefault();
                 }
 
-                _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer "+ token);
+                _httpClient.DefaultRequestHeaders.Add("Authorization", token);
 
-                var response2 = await _httpClient.GetAsync($"/checkLogin");
+                var response2 = await _httpClient.GetAsync($"/checkLogin?userName={username}");
+                
 
                 response2.EnsureSuccessStatusCode();
-
-                
 
             }
             catch (Exception e)
             {
                 return false;
             }
+
+            return true;
+        }
+
+        public async Task<bool> UnAuthenticate(string inputUsername)
+        {
+            var response = await _httpClient.GetAsync($"/logOut?username={inputUsername}");
+
+            response.EnsureSuccessStatusCode();
+
+            return true;
+        }
+
+        public async Task<bool> UpdateUserAsync(User user)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"/api/Users/{user.Id}", user);
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return false;
+            }
+
+            response.EnsureSuccessStatusCode();
 
             return true;
         }

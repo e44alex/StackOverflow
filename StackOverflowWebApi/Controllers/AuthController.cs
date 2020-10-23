@@ -5,10 +5,13 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using StackOverflowWebApi.Authentication;
 using StackOverflowWebApi.Models;
 
@@ -54,18 +57,24 @@ namespace StackOverflowWebApi.Controllers
 
             HttpContext.Response.Headers.Append("token", "Bearer " + encodedJwt);
 
-            HttpContext.Response.Cookies.Append("token", "Bearer " + encodedJwt);
-            HttpContext.Response.Cookies.Append("username", username);
-
+            HttpContext.Response.Headers.Add("Set-Cookie", $"token={encodedJwt}");
 
             return Json(response);
         }
 
         [Authorize]
         [HttpGet("/checkLogin")]
-        public IActionResult CheckLogin()
+        public async Task<IActionResult> CheckLogin(string userName)
         {
+            HttpContext.Response.Headers.Add("Set-Cookie", $"username={userName}");
             return Ok("You are authorized");
+        }
+
+        [Authorize]
+        [HttpGet("/logOut")]
+        public async Task<IActionResult> LogOut(string userName)
+        {
+            return Ok("You are unauthorized");
         }
 
         private ClaimsIdentity GetIdentity(string username, string password)

@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -52,10 +53,10 @@ namespace StackOverflow.Areas.Identity.Pages.Account
         {
             if (await _apiClient.Authenticate(Input.Username, Input.Password))
             {
-                HttpContext.User = new GenericPrincipal(new ClaimsIdentity(Input.Username), new []{"user"});
-
-                IIdentity identity = User.Identity;
-
+                
+                HttpContext.Response.Cookies.Append("token", "true");
+                HttpContext.Response.Cookies.Append("user", "e44alex");
+                return Redirect("~/");
             }
 
             return Redirect("~/Account/Login");
