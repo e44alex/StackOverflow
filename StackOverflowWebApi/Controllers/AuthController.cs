@@ -57,7 +57,7 @@ namespace StackOverflowWebApi.Controllers
 
             HttpContext.Response.Headers.Append("token", "Bearer " + encodedJwt);
 
-            HttpContext.Response.Headers.Add("Set-Cookie", $"token={encodedJwt}");
+            
 
             return Json(response);
         }
@@ -66,7 +66,7 @@ namespace StackOverflowWebApi.Controllers
         [HttpGet("/checkLogin")]
         public async Task<IActionResult> CheckLogin(string userName)
         {
-            HttpContext.Response.Headers.Add("Set-Cookie", $"username={userName}");
+            
             return Ok("You are authorized");
         }
 
@@ -83,11 +83,7 @@ namespace StackOverflowWebApi.Controllers
 
             if (user != null)
             {
-                if (String.IsNullOrEmpty(user.PasswordHash))
-                {
-                    user.PasswordHash = HashPassword("admin");
-                    _context.SaveChanges();
-                }
+                
 
                 if (VerifyHashedPassword(user.PasswordHash, password))
                 {

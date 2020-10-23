@@ -19,13 +19,11 @@ namespace StackOverflow.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
-        private readonly ILogger _logger;
         private readonly IApiClient _apiClient;
 
-        public RegisterModel(IApiClient apiClient, ILogger logger)
+        public RegisterModel(IApiClient apiClient)
         {
             _apiClient = apiClient;
-            _logger = logger;
         }
 
         [BindProperty]
@@ -78,12 +76,13 @@ namespace StackOverflow.Areas.Identity.Pages.Account
                     Surname = Input.Surname,
                     Login = Input.Email.Substring(0, Input.Email.IndexOf('@')),
                     Email = Input.Email,
+                    PasswordHash = Input.Password,
                     DateRegistered = DateTime.Now
                 };
                 var result = await _apiClient.AddUserAsync(user);
                 if (result)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                   
 
                     if (await _apiClient.Authenticate(user.Login, Input.Password))
                     {

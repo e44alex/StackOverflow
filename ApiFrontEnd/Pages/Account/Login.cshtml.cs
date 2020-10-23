@@ -55,7 +55,7 @@ namespace StackOverflow.Areas.Identity.Pages.Account
             {
                 
                 HttpContext.Response.Cookies.Append("token", "true");
-                HttpContext.Response.Cookies.Append("user", "e44alex");
+                HttpContext.Response.Cookies.Append("user", Input.Username);
                 return Redirect("~/");
             }
 

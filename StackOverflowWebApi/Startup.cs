@@ -19,6 +19,8 @@ using Microsoft.OpenApi.Models;
 using StackOverflowWebApi.Authentication;
 using StackOverflowWebApi.Models;
 using StackOverflowWebApi.Services;
+using Swashbuckle.Application;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace StackOverflowWebApi
 {
@@ -70,11 +72,22 @@ namespace StackOverflowWebApi
             //    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options => Configuration.Bind("JwtSettings", options))
             //    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options => Configuration.Bind("CookieSettings", options));
 
-            services.AddSwaggerGen(options => options.SwaggerDoc("v1", new OpenApiInfo()
+            services.AddSwaggerGen(options =>
             {
-                Title = "StackOverflow API",
-                Version = "v1"
-            }));
+                options.SwaggerDoc("v1", new OpenApiInfo()
+                {
+                    Title = "StackOverflow API",
+                    Version = "v1"
+                });
+                options.AddSecurityDefinition("token", new OpenApiSecurityScheme()
+                {
+                    Description = "Standard Authorization header using the Bearer scheme. Example: \"bearer {token}\"",
+                    In = ParameterLocation.Header,
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+                options.OperationFilter<SecurityRequirementsOperationFilter>();
+            });
 
             services.AddDbContext<AppDbContext>(options =>
             {
