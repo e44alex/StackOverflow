@@ -183,5 +183,19 @@ namespace StackOverflowWebApi.Services
 
             return true;
         }
+
+        public async Task<bool> AddUserAsync(User user)
+        {
+            var response = await _httpClient.PostAsJsonAsync("/api/Users", user);
+
+            if (response.StatusCode == HttpStatusCode.Conflict)
+            {
+                return false;
+            }
+
+            response.EnsureSuccessStatusCode();
+
+            return true;
+        }
     }
 }

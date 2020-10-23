@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
 using StackOverflowWebApi.Models;
 using StackOverflowWebApi.Services;
 
@@ -18,12 +19,13 @@ namespace StackOverflow.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
-
+        private readonly ILogger _logger;
         private readonly IApiClient _apiClient;
 
-        public RegisterModel(IApiClient apiClient)
+        public RegisterModel(IApiClient apiClient, ILogger logger)
         {
             _apiClient = apiClient;
+            _logger = logger;
         }
 
         [BindProperty]
@@ -78,40 +80,24 @@ namespace StackOverflow.Areas.Identity.Pages.Account
                     Email = Input.Email,
                     DateRegistered = DateTime.Now
                 };
-                var result = await _api.CreateAsync(user, Input.Password);
-                if (result.Succeeded)
+                var result = await _apiClient.AddUserAsync(user);
+                if (result)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code = code },
-                        protocol: Request.Scheme);
-
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    if (await _apiClient.Authenticate(user.Login, Input.Password))
                     {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email });
+                        HttpContext.Response.Cookies.Append("token", "true");
+                        HttpContext.Response.Cookies.Append("user", "e44alex");
+                        return Redirect("~/");
                     }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    }
+                    return Redirect("~/Account/Login");
                 }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+
             }
-
             // If we got this far, something failed, redisplay form
             return Page();
+
         }
     }
 }

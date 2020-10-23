@@ -21,5 +21,6 @@ namespace StackOverflowWebApi.Services
 
         Task<bool> UnAuthenticate(string inputUsername);
         Task<bool> UpdateUserAsync(User user);
+        Task<bool> AddUserAsync(User user);
     }
 }
