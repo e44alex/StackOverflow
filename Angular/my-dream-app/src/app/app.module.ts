@@ -3,22 +3,28 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MyComponentComponent } from './my-component/my-component.component';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { RouterModule } from '@angular/router';
+import { QuestionComponent } from './Question/Question.component';
+import { UserComponent } from './User/User.component';
+import { HomeComponent } from './Home/Home.component';
 
 @NgModule({
-  declarations: [	
-    AppComponent,
-      MyComponentComponent
-   ],
+  declarations: [AppComponent, HomeComponent, QuestionComponent, UserComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    NgbModule
+    NgbModule,
+    RouterModule.forRoot([
+      { path: '', component: HomeComponent },
+      { path: 'Question', component: QuestionComponent },
+      { path: 'User', component: UserComponent },
+    ]),
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
