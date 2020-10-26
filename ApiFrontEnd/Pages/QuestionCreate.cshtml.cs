@@ -23,15 +23,14 @@ namespace ApiFrontEnd.Pages
 
         public async Task<RedirectResult> OnPostAsync(Question question)
         {
-            /*TODO -- get authorized user's name*/
             var user = new User()
             {
-                Id = await _apiClient.GetUserIdAsync("e44alex")
+                Id = await _apiClient.GetUserIdAsync(HttpContext.Request.Cookies["user"])
             };
             
             question.Creator = user;
+            question.Id = Guid.NewGuid();
             
-
             await _apiClient.AddQuestionAsync(question);
 
             return Redirect($"/Question?id={question.Id}");

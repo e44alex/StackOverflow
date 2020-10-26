@@ -2,16 +2,28 @@
 @model ApiFrontEnd.IndexModel
 @{
     Layout = "_Layout";
+    string Username = "";
+
+    try
+    {
+        Username = HttpContext.Request.Cookies["user"];
+    }
+    catch (Exception e)
+    {
+        // ignored
+    }
 }
 
-<h1>Questions</h1>
 <div class="row">
     <div class="col-lg-10">
-        <h2>Questions</h2>
+        <h1>Questions</h1>
     </div>
-    <div class="col-lg-2">
-        <a asp-page="./QuestionCreate" class="btn btn-secondary">Ask a question</a>
-    </div>
+    @if (Username != "")
+    {
+        <div class="col-lg-2">
+            <a asp-page="./QuestionCreate" class="btn btn-secondary">Ask a question</a>
+        </div>
+    }
 </div>
 <div >
     @foreach (var question in Model.Questions)

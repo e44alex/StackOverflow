@@ -26,6 +26,15 @@ namespace ApiFrontEnd
         public async Task OnGet()
         {
             Questions = await _apiClient.GetQuestionsAsync();
+            Questions = Questions.OrderByDescending(x => x.LastActivity).ToList();
         }
+
+        public async Task Search(string searchText)
+        {
+            Questions = await _apiClient.GetQuestionsAsync();
+            Questions = Questions.Where(x => x.Topic.Contains(searchText)).OrderByDescending(x => x.LastActivity).ToList();
+        }
+
+
     }
 }

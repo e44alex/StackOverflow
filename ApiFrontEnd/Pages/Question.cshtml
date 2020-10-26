@@ -2,6 +2,17 @@
 @model ApiFrontEnd.Pages.QuestionModel
 @{
     Layout = "_Layout";
+    string Username = "";
+
+    try
+    {
+        Username = HttpContext.Request.Cookies["user"];
+    }
+    catch (Exception e)
+    {
+        // ignored
+    }
+
 }
 
 <h2>@Model.Question.Topic</h2>
@@ -61,10 +72,12 @@
 
                         </div>
                         <div class="col-sm-1">
-                            @*@if (User.Identity.IsAuthenticated)
-                            {*@
-                                <a asp-page-handler="like" class="btn btn-secondary">Like</a>
-                            @*}*@
+                            @if (Username != "")
+                            {
+                                <form method="post" asp-page-handler="OnLike">
+                                    <input type="button" class="btn btn-secondary" value="Like"/>
+                                </form>
+                            }
                         </div>
                         <div class="col-sm-2">
                             <p>
@@ -78,17 +91,17 @@
     </div>
 </div>
 
-@*@if (Model.Question.Opened && User.Identity.IsAuthenticated)
-{*@
+@if (Username != "")
+{
     @* add answer block *@
     <div>
         <h4>Add your own answer:</h4>
     </div>
     <div>
         <form method="post">
-            <input type="text"  hidden="true" name="Question.Id"/>
+            <input type="text" hidden="true" name="Question.Id"/>
             <textarea name="Body" class="form-control mb-5" placeholder="Enter your answer"></textarea>
-            <input type="submit" value="Send" class="btn btn-primary" />
+            <input type="submit" value="Send" class="btn btn-primary"/>
         </form>
     </div>
-@*  *@
+}  

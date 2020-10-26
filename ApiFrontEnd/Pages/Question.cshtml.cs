@@ -38,7 +38,7 @@ namespace ApiFrontEnd.Pages
             return Redirect($"/Question?id={answer.Question.Id}");
         }
 
-        public async Task<RedirectResult> OnPostLike(Answer answer)
+        public async Task<RedirectResult> OnLike(Answer answer)
         {
             var currentUser = await _apiClient.GetUserDataAsync("e44alex");
 

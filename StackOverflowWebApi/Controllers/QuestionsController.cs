@@ -86,7 +86,6 @@ namespace StackOverflowWebApi.Controllers
             var user = await _context.Users.FindAsync(question.Creator.Id);
 
             question.Creator = user;
-            question.Id = Guid.NewGuid();
             question.LastActivity = DateTime.Now;
             question.Opened = true;
             question.DateCreated = DateTime.Now;

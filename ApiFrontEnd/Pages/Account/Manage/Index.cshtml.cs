@@ -17,7 +17,7 @@ namespace ApiFrontEnd.Pages.Account.Manage
         public IndexModel(IApiClient apiClient)
         {
             _apiClient = apiClient;
-            Username = HttpContext.Request.Cookies["username"];
+            
         }
 
         public string Username { get; set; }
@@ -64,7 +64,7 @@ namespace ApiFrontEnd.Pages.Account.Manage
 
         public async Task<IActionResult> OnGetAsync()
         {
-
+            Username = HttpContext.Request.Cookies["user"];
             var user = await _apiClient.GetUserDataAsync(Username);
             if (user == null)
             {
