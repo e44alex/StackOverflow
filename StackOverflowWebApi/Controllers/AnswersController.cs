@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using StackOverflowWebApi.Models;
 
@@ -31,7 +33,9 @@ namespace StackOverflowWebApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Answer>> GetAnswer(Guid id)
         {
-            var answer = await _context.Answers.FindAsync(id);
+            var answer = await _context.Answers
+                .Include(x => x.Users)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (answer == null)
             {
@@ -64,6 +68,11 @@ namespace StackOverflowWebApi.Controllers
 
             _context.Entry(answer).State = EntityState.Modified;
 
+            foreach (var user in answer.Users)
+            {
+                user.Answer = answer;
+            }
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -93,11 +102,11 @@ namespace StackOverflowWebApi.Controllers
             question.LastActivity= DateTime.Now;
 
             answer.DateCreated = DateTime.Now;
-            answer.Question = await _context.Questions.FirstOrDefaultAsync(q => q.Id == answer.Id);
+            answer.Question = question;
             answer.Id = Guid.NewGuid();
             answer.Creator = await _context.FindAsync<User>(answer.Creator.Id);
             
-            _context.Answers.Add(answer);
+            _context.Add(answer);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetAnswer", new { id = answer.Id }, answer);
@@ -117,6 +126,31 @@ namespace StackOverflowWebApi.Controllers
             await _context.SaveChangesAsync();
 
             return answer;
+        }
+
+        [HttpGet("/like")]
+        public async Task<IActionResult> LikeAnswer(Guid answerId, string username)
+        {
+            var answer = await _context.Answers
+                .Include(x => x.Question)
+                .FirstOrDefaultAsync(x =>x.Id == answerId);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Login == username);
+
+            if (answer.Creator.Id == user.Id)
+            {
+                answer.Question.Opened = false;
+            }
+
+            _context.Add(new AnswerLiker
+            {
+                Id = Guid.NewGuid(),
+                Answer = answer,
+                User = user
+            });
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
         private bool AnswerExists(Guid id)

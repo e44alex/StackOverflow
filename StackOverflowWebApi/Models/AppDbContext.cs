@@ -21,6 +21,11 @@ namespace StackOverflowWebApi.Models
             modelBuilder.Entity<Question>().HasIndex(u => u.Id).IsUnique();
 
             modelBuilder.Entity<Answer>().HasIndex(u => u.Id).IsUnique();
+            modelBuilder.Entity<AnswerLiker>().HasKey(u => new
+            {
+                u.UserId,
+                u.AnswerId
+            });
 
             modelBuilder.Entity<AnswerLiker>().HasOne(u => u.User).WithMany(x => x.LikedAnswers);
             modelBuilder.Entity<AnswerLiker>().HasOne(u => u.Answer).WithMany(x => x.Users);

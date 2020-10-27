@@ -74,9 +74,11 @@
                         <div class="col-sm-1">
                             @if (Username != "")
                             {
-                                <form method="post" asp-page-handler="OnLike">
-                                    <input type="button" class="btn btn-secondary" value="Like"/>
-                                </form>
+                            <form method="post">
+                                <input type="hidden" asp-for="@answer.Id" />
+                                <input type="hidden" asp-for="Question.Id" />
+                                <input type="submit" class="btn btn-secondary" value="Like" asp-page-handler="Like" />
+                            </form>
                             }
                         </div>
                         <div class="col-sm-2">
@@ -91,7 +93,7 @@
     </div>
 </div>
 
-@if (Username != "")
+@if (Username != "" && Model.Question.Opened)
 {
     @* add answer block *@
     <div>
@@ -99,7 +101,7 @@
     </div>
     <div>
         <form method="post">
-            <input type="text" hidden="true" name="Question.Id"/>
+            <input asp-for="Question.Id" type="text" hidden="true" />
             <textarea name="Body" class="form-control mb-5" placeholder="Enter your answer"></textarea>
             <input type="submit" value="Send" class="btn btn-primary"/>
         </form>

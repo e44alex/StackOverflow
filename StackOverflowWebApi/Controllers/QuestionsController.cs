@@ -24,7 +24,11 @@ namespace StackOverflowWebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Question>>> GetQuestions()
         {
-            return await _context.Questions.Include(x => x.Creator).ToListAsync();
+            return await _context.Questions
+                .Include(x => x.Creator)
+                .Include(x=> x.Answers)
+                .ThenInclude(x => x.Users)
+                .ToListAsync();
         }
 
         // GET: api/Questions/5

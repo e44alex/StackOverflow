@@ -72,7 +72,7 @@ namespace StackOverflowWebApi.Services
 
         public async Task<bool> AddAnswerAsync(Answer answer)
         {
-            var response = await _httpClient.PostAsJsonAsync("/api/Answers", answer);
+            var response = await _httpClient.PostAsJsonAsync("/api/Answers/", answer);
 
             if (response.StatusCode == HttpStatusCode.Conflict)
             {
@@ -187,6 +187,20 @@ namespace StackOverflowWebApi.Services
         public async Task<bool> AddUserAsync(User user)
         {
             var response = await _httpClient.PostAsJsonAsync("/api/Users", user);
+
+            if (response.StatusCode == HttpStatusCode.Conflict)
+            {
+                return false;
+            }
+
+            response.EnsureSuccessStatusCode();
+
+            return true;
+        }
+
+        public async Task<bool> LikeAnswerAsync(Guid answerId,string username)
+        {
+            var response = await _httpClient.GetAsync($"/like?answerId={answerId}&username={username}");
 
             if (response.StatusCode == HttpStatusCode.Conflict)
             {

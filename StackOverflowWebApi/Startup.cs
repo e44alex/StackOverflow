@@ -68,10 +68,6 @@ namespace StackOverflowWebApi
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options => 
                 Configuration.Bind("CookieSettings", options)); ;
 
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options => Configuration.Bind("JwtSettings", options))
-            //    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options => Configuration.Bind("CookieSettings", options));
-
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo()

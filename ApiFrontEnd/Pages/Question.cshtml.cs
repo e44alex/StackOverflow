@@ -25,37 +25,25 @@ namespace ApiFrontEnd.Pages
             Question = await _apiClient.GetQuestionAsync(id);
         }
 
-        public async Task<RedirectResult> OnPost(Answer answer)
+        public async Task<RedirectResult> OnPost(Guid questionId ,Answer answer)
         {
             answer.Creator = new User()
             {
-                Id = await _apiClient.GetUserIdAsync("e44alex")
+                Id = await _apiClient.GetUserIdAsync(HttpContext.Request.Cookies["user"])
             };
 
-
+            answer.Id = new Guid();
+            answer.Question = await _apiClient.GetQuestionAsync(answer.Question.Id);
             await _apiClient.AddAnswerAsync(answer);
 
             return Redirect($"/Question?id={answer.Question.Id}");
         }
 
-        public async Task<RedirectResult> OnLike(Answer answer)
+        public async Task<RedirectResult> OnPostLike(Answer answer, Question question)
         {
-            var currentUser = await _apiClient.GetUserDataAsync("e44alex");
+            await _apiClient.LikeAnswerAsync(answer.Id, HttpContext.Request.Cookies["user"]);
 
-            if (!answer.Users.Any(u => u.User.Equals(User)))
-            {
-                answer.Users.Add(new AnswerLiker()
-                {
-                    Id = Guid.NewGuid(),
-                    Answer = answer,
-                    User = currentUser
-
-                });
-            }
-
-            await _apiClient.UpdateAnswerAsync(answer);
-
-            return Redirect($"/Question?id={answer.Question.Id}");
+            return Redirect($"/Question?id={question.Id}");
         }
     }
 }
