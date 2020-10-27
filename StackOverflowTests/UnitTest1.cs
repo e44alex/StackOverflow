@@ -15,9 +15,20 @@ namespace StackOverflowTests
 {
     public class Tests
     {
+        private AppDbContext _context;
+
         [SetUp]
         public void Setup()
         {
+            var builder = new DbContextOptionsBuilder<AppDbContext>();
+            builder.UseInMemoryDatabase("testDB1");
+            _context = new AppDbContext(builder.Options);
+
+            _context.Add(new User());
+            _context.Add(new Question());
+            _context.Add(new Answer());
+            _context.Add(new AnswerLiker());
+            _context.SaveChangesAsync();
         }
 
         [Test]
@@ -29,15 +40,38 @@ namespace StackOverflowTests
         [Test]
         public void Test_QuestionsController_GetQuestions_ReturnsListOfQuestions()
         {
-            var service = new Mock<AppDbContext>();
-            service.Setup( context => context.Questions.ToList())
-                .Returns(() => new List<Question>());
 
-            QuestionsController controller = new QuestionsController(service.Object);
+            QuestionsController controller = new QuestionsController(_context);
 
             var result = controller.GetQuestions();
 
             Assert.IsNotEmpty(result.Result.Value);
         }
+
+
+
+        [Test]
+        public void Test_UsersController_GetUsers_ReturnsListOfUsers()
+        {
+
+            UsersController controller = new UsersController(_context);
+
+            var result = controller.GetUsers();
+
+            Assert.IsNotEmpty(result.Result.Value);
+        }
+
+        [Test]
+        public void Test_AnswersController_Get_ReturnsList()
+        {
+
+            AnswersController controller = new AnswersController(_context);
+
+            var result = controller.GetAnswers();
+
+            Assert.IsNotEmpty(result.Result.Value);
+        }
+
+
     }
 }
