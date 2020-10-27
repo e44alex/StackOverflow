@@ -23,18 +23,15 @@ namespace ApiFrontEnd
             _apiClient = apiClient;
         }
 
-        public async Task OnGet()
+        public async Task OnGet(string? searchText)
         {
             Questions = await _apiClient.GetQuestionsAsync();
             Questions = Questions.OrderByDescending(x => x.LastActivity).ToList();
+            if (!String.IsNullOrEmpty(searchText))
+            {
+                Questions = Questions.Where(x => x.Topic.Contains(searchText)).ToList();
+            }
         }
-
-        public async Task Search(string searchText)
-        {
-            Questions = await _apiClient.GetQuestionsAsync();
-            Questions = Questions.Where(x => x.Topic.Contains(searchText)).OrderByDescending(x => x.LastActivity).ToList();
-        }
-
 
     }
 }
