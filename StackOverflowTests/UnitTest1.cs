@@ -38,38 +38,38 @@ namespace StackOverflowTests
         }
 
         [Test]
-        public void Test_QuestionsController_GetQuestions_ReturnsListOfQuestions()
+        public async Task Test_QuestionsController_GetQuestions_ReturnsListOfQuestions()
         {
 
             QuestionsController controller = new QuestionsController(_context);
 
-            var result = controller.GetQuestions();
+            var result = await controller.GetQuestions();
 
-            Assert.IsNotEmpty(result.Result.Value);
+            Assert.IsNotEmpty(result.Value);
         }
 
 
 
         [Test]
-        public void Test_UsersController_GetUsers_ReturnsListOfUsers()
+        public async Task Test_UsersController_GetUsers_ReturnsListOfUsers()
         {
 
             UsersController controller = new UsersController(_context);
 
-            var result = controller.GetUsers();
+            var result = await controller.GetUsers();
 
-            Assert.IsNotEmpty(result.Result.Value);
+            Assert.IsNotEmpty(result.Value);
         }
 
         [Test]
-        public void Test_AnswersController_Get_ReturnsList()
+        public async Task Test_AnswersController_Get_ReturnsList()
         {
 
             AnswersController controller = new AnswersController(_context);
 
-            var result = controller.GetAnswers();
+            var result = await controller.GetAnswers();
 
-            Assert.IsNotEmpty(result.Result.Value);
+            Assert.IsNotEmpty(result.Value);
         }
 
 
