@@ -21,8 +21,8 @@ import { HomeComponent } from './Home/Home.component';
     NgbModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent },
-      { path: 'Question', component: QuestionComponent },
-      { path: 'User', component: UserComponent },
+      { path: 'Question/:id', component: QuestionComponent },
+      { path: 'User/:id', component: UserComponent },
     ]),
   ],
   providers: [],

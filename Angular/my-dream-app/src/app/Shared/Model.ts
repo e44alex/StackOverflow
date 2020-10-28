@@ -2,14 +2,14 @@ import { DecimalPipe } from '@angular/common';
 import { Guid } from 'guid-typescript';
 
 export class User {
-    Id: Guid;
+    id: string;
     login: string;
     email:string;
     rating: number;
 }
 
 export class Question{
-    Id: Guid;
+    id: string;
     topic: string;
     body: string;
     dateCreated: Date;
@@ -20,7 +20,7 @@ export class Question{
 }
 
 export class Answer{
-    Id: Guid;
+    id: string;
     QuestionId: Guid;
     CreatorId: Guid;
     body:string;
@@ -30,7 +30,7 @@ export class Answer{
 }
 
 export class AnswerLiker{
-    Id: Guid;
+    id: string;
     user: User;
     answer: Answer
 }

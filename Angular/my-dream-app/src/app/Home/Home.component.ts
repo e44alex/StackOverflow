@@ -16,4 +16,8 @@ export class HomeComponent implements OnInit {
     this.service.getQuestions()
       .then((x) => (this.questions = x));
   }
+
+  onClick(){
+    console.log(this.questions)
+  }
 }

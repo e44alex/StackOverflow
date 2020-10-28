@@ -22,7 +22,7 @@ export class DataServiceService {
 
   getQuestion(id: string): Promise<Question>{
     return new Promise((resolve, reject) => {
-      this.http.get('/api/Questions/'+id)
+      this.http.get('https://localhost:44360/api/Questions/'+id)
       .subscribe((data: Question)=> {
         return resolve(data)
       });
@@ -31,7 +31,7 @@ export class DataServiceService {
 
   getAnswers(): Promise<Answer[]>{
     return new Promise((resolve, reject) => {
-      this.http.get('/api/Answers')
+      this.http.get('https://localhost:44360/api/Answers')
       .subscribe((data: Answer[])=> {
         return resolve(data)
       });
@@ -40,7 +40,7 @@ export class DataServiceService {
 
   getAnswer(id: string): Promise<Answer>{
     return new Promise((resolve, reject) => {
-      this.http.get('/api/Questions/'+id)
+      this.http.get('https://localhost:44360/api/Questions/'+id)
       .subscribe((data: Answer)=> {
         return resolve(data)
       });
