@@ -1,37 +1,40 @@
-<div class="row">
-  <div class="card card-body col-6 ml-0" >
-    <h2>Question topic</h2>
+
+    <h2>{{question.topic}}</h2>
     <div>
-      <p>
+      <p *ngIf="question.opened">
         Discussion is opened
+      </p>
+      <p *ngIf="!question.opened">
+        Discussion closed
       </p>
     </div>
 
     <div class="card mb-5">
       <div class="card-header">
         <h2>
-          Question Topic
+          {{question.topic}}
         </h2>
       </div>
       <div class="card-body">
-        Question body
+        {{question.body}}
       </div>
-      <div class="card-footer">Created by: <a>Alex Peteson</a> on 24-05-2000 14:55</div>
+      <div class="card-footer">Created by: <a>{{question.creator.login}}</a> on {{question.dateCreated}}</div>
     </div>
     <div>
       <h3>
-        <p><b>10 answers</b></p>
+        <p><b>{{question.answers.length}} answers</b></p>
       </h3>
-      <div class="mt-5">
+
+      <div class="mt-5" *ngFor="let answer of question.answers">
         <div class="card mb-2">
           <div class="card-header">
-            <a href="/User" >Creator</a>
+            <a href="/User/{{answer.creator.Id}}">{{answer.creator.login}}</a>
           </div>
-          <div class="card-body">Some test body here</div>
+          <div class="card-body">{{answer.body}}</div>
           <div class="card-footer">
             <div class="row">
               <div class="col-sm-9">
-                Created on 25-05-2000 14:55
+                Created on {{answer.dateCreated}}
               </div>
               <div class="col-sm-1">
                 <form method="post" asp-page-handler="OnLike">
@@ -40,7 +43,7 @@
               </div>
               <div class="col-sm-2">
                 <p>
-                  15 Liked this
+                  {{answer.likers.length}}} Liked this
                 </p>
               </div>
             </div>
@@ -50,18 +53,15 @@
       </div>
     </div>
 
-
-    <div>
-      <h4>Add your own answer:</h4>
+    <div *ngIf="question.opened">
+      <div>
+        <h4>Add your own answer:</h4>
+      </div>
+      <div>
+        <form method="post">
+          <input type="text" hidden="true" name="Question.Id" />
+          <textarea name="Body" class="form-control mb-5" placeholder="Enter your answer"></textarea>
+          <input type="submit" value="Send" class="btn btn-primary" />
+        </form>
+      </div>
     </div>
-    <div>
-      <form method="post">
-        <input type="text" hidden="true" name="Question.Id" />
-        <textarea name="Body" class="form-control mb-5" placeholder="Enter your answer"></textarea>
-        <input type="submit" value="Send" class="btn btn-primary" />
-      </form>
-    </div>
-
-  </div>
-
-</div>

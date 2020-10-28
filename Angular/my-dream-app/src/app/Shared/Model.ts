@@ -3,7 +3,7 @@ import { Guid } from 'guid-typescript';
 
 export class User {
     Id: Guid;
-    username: string;
+    login: string;
     email:string;
     rating: number;
 }
