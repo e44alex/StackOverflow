@@ -28,7 +28,7 @@
       <div class="mt-5" *ngFor="let answer of question.answers">
         <div class="card mb-2">
           <div class="card-header">
-            <a href="/User/{{answer.creator.Id}}">{{answer.creator.login}}</a>
+            <a href="/User/{{answer.creator.id}}">{{answer.creator.login}}</a>
           </div>
           <div class="card-body">{{answer.body}}</div>
           <div class="card-footer">
@@ -43,7 +43,7 @@
               </div>
               <div class="col-sm-2">
                 <p>
-                  {{answer.likers.length}}} Liked this
+                  {{answer.likers.length}} Liked this
                 </p>
               </div>
             </div>
@@ -58,7 +58,7 @@
         <h4>Add your own answer:</h4>
       </div>
       <div>
-        <form method="post">
+        <form #f="ngForm" (ngSubmit)="OnAnswerSubmit(f)" #form="ngForm">
           <input type="text" hidden="true" name="Question.Id" />
           <textarea name="Body" class="form-control mb-5" placeholder="Enter your answer"></textarea>
           <input type="submit" value="Send" class="btn btn-primary" />

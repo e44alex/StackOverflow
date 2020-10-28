@@ -47,4 +47,7 @@ export class DataServiceService {
     });   
   }
 
+  sendAnswer(answer: Answer){
+    this.http.post('https://localhost:44360/api/Answers', answer)
+  }
 }

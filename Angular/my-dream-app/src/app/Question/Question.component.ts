@@ -25,4 +25,8 @@ export class QuestionComponent implements OnInit {
       }
     });
   }
+
+  OnAnswerSubmit(answerData){
+    console.log()
+  }
 }
