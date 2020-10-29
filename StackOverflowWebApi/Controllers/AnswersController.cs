@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -58,6 +59,8 @@ namespace StackOverflowWebApi.Controllers
         // PUT: api/Answers/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAnswer(Guid id, Answer answer)
         {
@@ -95,6 +98,8 @@ namespace StackOverflowWebApi.Controllers
         // POST: api/Answers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Answer>> PostAnswer(Answer answer)
         {
@@ -127,7 +132,7 @@ namespace StackOverflowWebApi.Controllers
 
             return answer;
         }
-
+        [Authorize]
         [HttpGet("/like")]
         public async Task<IActionResult> LikeAnswer(Guid answerId, string username)
         {

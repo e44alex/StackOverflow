@@ -21,10 +21,9 @@ export class Question{
 
 export class Answer{
     id: string;
-    QuestionId: Guid;
-    CreatorId: Guid;
+    question: Question;
     body:string;
-    dateCreated: string;
+    dateCreated: Date;
     creator: User;
     likers: User[];
 }

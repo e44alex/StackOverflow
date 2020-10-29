@@ -115,7 +115,12 @@ namespace StackOverflowWebApi
 
             app.UseRouting();
 
-            app.UseCors(builder => builder.AllowAnyOrigin());
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyOrigin();
+                builder.AllowAnyHeader();
+                builder.AllowAnyMethod();
+            } );
 
             app.UseAuthentication();
             app.UseAuthorization();

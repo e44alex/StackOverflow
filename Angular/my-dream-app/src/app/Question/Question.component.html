@@ -43,7 +43,7 @@
               </div>
               <div class="col-sm-2">
                 <p>
-                  {{answer.likers.length}} Liked this
+                  <!-- {{answer.likers.length}} Liked this -->
                 </p>
               </div>
             </div>
@@ -58,10 +58,10 @@
         <h4>Add your own answer:</h4>
       </div>
       <div>
-        <form #answerForm="ngForm" (ngSubmit)="OnAnswerSubmit(answerForm)">
-          <input type="text" hidden="true" name="Question.Id" />
+        <form #answerForm="ngForm"  (ngSubmit)="OnAnswerSubmit(answerForm)">
+          <input name="questionId" hidden type="text" [(ngModel)]="question.id"/>
           <textarea ngModel  required name="body" #body="ngModel" class="form-control mb-5" placeholder="Enter your answer"></textarea>
-          <input type="submit" value="Send" class="btn btn-primary" (click)="OnAnswerSubmit(answerForm)"/>
+          <input type="submit" value="Send" class="btn btn-primary"/>
         </form>
       </div>
     </div>

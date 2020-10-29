@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Answer, Question } from './Model';
+
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +49,20 @@ export class DataServiceService {
   }
 
   sendAnswer(answer: Answer){
-    this.http.post('https://localhost:44360/api/Answers', answer)
+
+    console.log("send answer invoked");
+    const headers =  {
+      headers: new  HttpHeaders({ 
+        'Content-Type': 'application/json'})
+    };
+    return this.http.post<any>('https://localhost:44360/api/Answers', answer, headers).subscribe({
+      next: data => {
+        console.log(data)
+      },
+      error: error => {
+        console.log(error)
+      }
+    });
+    
   }
 }
