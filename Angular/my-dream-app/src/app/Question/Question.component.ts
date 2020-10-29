@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { DataServiceService } from '../Shared/data-service.service';
-import { Question } from '../Shared/Model';
+import { Answer, Question } from '../Shared/Model';
+import { NgForm } from '@angular/forms'
 
 @Component({
   selector: 'app-Question',
@@ -10,6 +11,7 @@ import { Question } from '../Shared/Model';
 })
 export class QuestionComponent implements OnInit {
   question: Question;
+  answer: Answer;
 
   constructor(
     private dataService: DataServiceService,
@@ -26,7 +28,7 @@ export class QuestionComponent implements OnInit {
     });
   }
 
-  OnAnswerSubmit(answerData){
-    console.log()
+  OnAnswerSubmit(form: NgForm){
+    console.log(form)
   }
 }

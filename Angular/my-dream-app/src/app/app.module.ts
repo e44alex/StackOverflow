@@ -10,12 +10,14 @@ import { RouterModule } from '@angular/router';
 import { QuestionComponent } from './Question/Question.component';
 import { UserComponent } from './User/User.component';
 import { HomeComponent } from './Home/Home.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, QuestionComponent, UserComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
     NgbModule,
