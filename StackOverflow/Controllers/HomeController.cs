@@ -15,27 +15,47 @@ namespace StackOverflow.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext _context;
 
+        public PageViewModel ViewModel { get; set; }
+
+
         public HomeController(ILogger<HomeController> logger, AppDbContext context)
         {
             _logger = logger;
             _context = context;
         }
 
-        public async Task<ViewResult> Home()
+        public async Task<ViewResult> Home(int page = 1)
         {
+            var pagesize = 3;
+            
             var appContext = _context.Questions.Include(q => q.Creator);
-            return View(await appContext
+            var count = appContext.Count();
+            var items = appContext
                 .OrderByDescending(x => x.LastActivity)
-                .ToListAsync());
+                .Skip((page - 1) * pagesize)
+                .Take(pagesize); 
+
+            var viewModel = new IndexViewModel()
+            {
+                VierwModel = new PageViewModel(count, page,pagesize),
+                Questions = items
+            };
+
+            return View(viewModel);
         }
 
         public async Task<ViewResult> Search(string searchText)
         {
             var appContext = _context.Questions.Include(q => q.Creator);
-            return View("Home",await appContext
+            var items = await appContext
                 .Where(x => x.Topic.Contains(searchText))
                 .OrderByDescending(x => x.LastActivity)
-                .ToListAsync());
+                .ToListAsync();
+            return View("Home", new IndexViewModel()
+            {
+                VierwModel = new PageViewModel(items.Count, 1, items.Count),
+                Questions = items
+            });
         }
 
         public IActionResult Privacy()

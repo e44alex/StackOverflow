@@ -17,20 +17,57 @@ namespace ApiFrontEnd
 
         public bool Authenticated { get; set; }
 
+        public MyPageViewModel PageViewModel { get; set; }
+
+        public class MyPageViewModel
+        {
+            public int PageNumber { get; private set; }
+            public int TotalPages { get; private set; }
+
+            public MyPageViewModel(int count, int pageNumber, int pageSize)
+            {
+                PageNumber = pageNumber;
+                TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+            }
+
+            public bool HasPreviousPage
+            {
+                get
+                {
+                    return (PageNumber > 1);
+                }
+            }
+
+            public bool HasNextPage
+            {
+                get
+                {
+                    return (PageNumber < TotalPages);
+                }
+            }
+        }
+
 
         public IndexModel(IApiClient apiClient)
         {
             _apiClient = apiClient;
         }
 
-        public async Task OnGet(string? searchText)
+        public async Task OnGet(string? searchText, int page=1)
         {
+            int pagesize = 3;
+
             Questions = await _apiClient.GetQuestionsAsync();
             Questions = Questions.OrderByDescending(x => x.LastActivity).ToList();
             if (!String.IsNullOrEmpty(searchText))
             {
                 Questions = Questions.Where(x => x.Topic.Contains(searchText)).ToList();
             }
+
+            var count = Questions.Count;
+            Questions = Questions.Skip((page - 1) * pagesize).Take(pagesize).ToList();
+
+            PageViewModel = new MyPageViewModel(count, page, pagesize);
         }
 
     }

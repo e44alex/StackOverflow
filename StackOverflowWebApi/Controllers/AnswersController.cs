@@ -148,9 +148,21 @@ namespace StackOverflowWebApi.Controllers
                 User = user
             });
 
+            user.Rating = await SetUserRatingAsync(user.Login);
+
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private async Task<int?> SetUserRatingAsync(string userName)
+        {
+            var totalQuestion = _context.Questions.Count(x => x.Creator.Login == userName);
+            var totalAnswers = _context.Answers.Count(x => x.Creator.Login == userName);
+            var likedAnswers = _context.Answers.Count(x => x.Creator.Login == userName && x.Users.Count > 0);
+
+            float result = ((float)(totalQuestion + likedAnswers)) / (totalAnswers + totalQuestion);
+            return (int?)Math.Round(result * 100);
         }
 
         private bool AnswerExists(Guid id)

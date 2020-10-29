@@ -62,7 +62,7 @@
         {
             <div class="card mb-2">
                 <div class="card-header">
-                    <a asp-page="User" asp-route-id="@answer.Creator.Id">@answer.Creator.Name @answer.Creator.Surname</a>
+                    <a asp-page="User" asp-route-username="@answer.Creator.Login">@answer.Creator.Name @answer.Creator.Surname</a>
                 </div>
                 <div class="card-body">@answer.Body</div>
                 <div class="card-footer">
