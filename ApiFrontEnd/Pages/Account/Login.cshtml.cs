@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
@@ -35,7 +36,8 @@ namespace StackOverflow.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            
+            [EmailAddress]
+            [DisplayName("Email")]
             public string Username { get; set; }
 
             [Required]
@@ -61,7 +63,8 @@ namespace StackOverflow.Areas.Identity.Pages.Account
                 return Redirect("~/");
             }
 
-            return Redirect("~/Account/Login");
+            ModelState.AddModelError(string.Empty, "Invalid username or password.");
+            return Page();
 
         }
 

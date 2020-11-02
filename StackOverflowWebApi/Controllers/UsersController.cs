@@ -46,7 +46,7 @@ namespace StackOverflowWebApi.Controllers
         [HttpGet("byName/{username}")]
         public async Task<ActionResult<User>> GetUser(string username)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Login == username);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == username);
 
             if (user == null)
             {
@@ -105,6 +105,11 @@ namespace StackOverflowWebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
+            if (_context.Users.Any(u=> u.Email == user.Email))
+            {
+                return Forbid();
+            }
+
             user.PasswordHash = AuthController.HashPassword(user.PasswordHash);
             _context.Users.Add(user);
             await _context.SaveChangesAsync();

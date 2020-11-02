@@ -76,7 +76,7 @@ namespace StackOverflowWebApi.Controllers
 
         private ClaimsIdentity GetIdentity(string username, string password)
         {
-            User user = _context.Users.FirstOrDefault(x => x.Login == username);
+            User user = _context.Users.FirstOrDefault(x => x.Email == username);
 
             if (user != null)
             {

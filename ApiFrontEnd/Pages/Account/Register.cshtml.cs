@@ -87,10 +87,15 @@ namespace StackOverflow.Areas.Identity.Pages.Account
                     if (!string.IsNullOrEmpty(token))
                     {
                         HttpContext.Response.Cookies.Append("token", token.Encrypt());
-                        HttpContext.Response.Cookies.Append("user", user.Login);
+                        HttpContext.Response.Cookies.Append("user", user.Email);
                         return Redirect("~/");
                     }
                     return Redirect("~/Account/Login");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "User with this Email address has been already registered");
+                    return Page();
                 }
 
             }

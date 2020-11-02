@@ -17,7 +17,7 @@ namespace StackOverflowWebApi.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasKey(u => u.Id);
-
+            modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
             modelBuilder.Entity<Question>().HasIndex(u => u.Id).IsUnique();
 
             modelBuilder.Entity<Answer>().HasIndex(u => u.Id).IsUnique();

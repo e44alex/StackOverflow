@@ -176,7 +176,7 @@ namespace StackOverflowWebApi.Services
         {
             var response = await _httpClient.PostAsJsonAsync("/api/Users", user);
 
-            if (response.StatusCode == HttpStatusCode.Conflict)
+            if (response.StatusCode == HttpStatusCode.Forbidden)
             {
                 return false;
             }
