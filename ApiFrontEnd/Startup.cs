@@ -36,7 +36,11 @@ namespace ApiFrontEnd
             services.AddHttpClient<IApiClient, ApiClient>(client =>
             {
                 client.BaseAddress = new Uri(Configuration["serviceUrl"]);
+                
             });
+
+            //services.AddSingleton<ApiClient>();
+
 
             services.AddRazorPages(options =>
             {
@@ -44,10 +48,10 @@ namespace ApiFrontEnd
             });
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options => //CookieAuthenticationOptions
-                {
-                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
-                });
+            .AddCookie(options => //CookieAuthenticationOptions
+            {
+                options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
+            });
             
 
         }

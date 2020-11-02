@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ApiFrontEnd.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -30,8 +31,10 @@ namespace ApiFrontEnd.Pages
             
             question.Creator = user;
             question.Id = Guid.NewGuid();
-            
-            await _apiClient.AddQuestionAsync(question);
+
+            string token = HttpContext.Request.Cookies["token"].Decrypt();
+
+            await _apiClient.AddQuestionAsync(question, token);
 
             return Redirect($"/Question?id={question.Id}");
         }

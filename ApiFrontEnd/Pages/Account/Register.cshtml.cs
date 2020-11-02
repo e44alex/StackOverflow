@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using ApiFrontEnd.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -82,12 +83,11 @@ namespace StackOverflow.Areas.Identity.Pages.Account
                 var result = await _apiClient.AddUserAsync(user);
                 if (result)
                 {
-                   
-
-                    if (await _apiClient.Authenticate(user.Login, Input.Password))
+                    string token = await _apiClient.Authenticate(user.Login, Input.Password);
+                    if (!string.IsNullOrEmpty(token))
                     {
-                        HttpContext.Response.Cookies.Append("token", "true");
-                        HttpContext.Response.Cookies.Append("user", "e44alex");
+                        HttpContext.Response.Cookies.Append("token", token.Encrypt());
+                        HttpContext.Response.Cookies.Append("user", user.Login);
                         return Redirect("~/");
                     }
                     return Redirect("~/Account/Login");

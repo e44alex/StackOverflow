@@ -59,19 +59,3 @@
         </div>
     }
 </div>
-
-<div>
-    @if (Model.PageViewModel.HasPreviousPage)
-    {
-        <span>
-            <a class="btn btn-outline-info" asp-page="Index" asp-route-page="@(Model.PageViewModel.PageNumber - 1)">Previous page</a>
-        </span>
-    }
-    @if (Model.PageViewModel.HasNextPage)
-    {
-        <span>
-            <a class="btn btn-outline-info" asp-page="Index" asp-route-page="@(Model.PageViewModel.PageNumber + 1)">Next page</a>
-        </span>
-    }
-
-</div>

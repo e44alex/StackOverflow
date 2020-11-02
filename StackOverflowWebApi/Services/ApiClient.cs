@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Server.IIS.Core;
@@ -15,10 +16,14 @@ namespace StackOverflowWebApi.Services
     {
         private readonly HttpClient _httpClient;
 
+        
+
         public ApiClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
+
         }
+
 
         public async Task<List<Question>> GetQuestionsAsync()
         {
@@ -38,15 +43,6 @@ namespace StackOverflowWebApi.Services
             return await response.Content.ReadAsAsync<Question>();
         }
 
-        public async Task<Answer> GetAnswerAsync(Guid answerId)
-        {
-            var response = await _httpClient.GetAsync($"/api/Answers/{answerId}");
-
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadAsAsync<Answer>();
-        }
-
         public async Task<List<Answer>> GetAnswersByQuestionAsync(Guid questionId)
         {
             var response = await _httpClient.GetAsync($"/api/Answers/byQuestion/{questionId}");
@@ -56,8 +52,9 @@ namespace StackOverflowWebApi.Services
             return await response.Content.ReadAsAsync<List<Answer>>();
         }
 
-        public async Task<bool> AddQuestionAsync(Question question)
+        public async Task<bool> AddQuestionAsync(Question question, string token)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _httpClient.PostAsJsonAsync("/api/Questions", question);
 
             if (response.StatusCode == HttpStatusCode.Conflict)
@@ -70,8 +67,34 @@ namespace StackOverflowWebApi.Services
             return true;
         }
 
-        public async Task<bool> AddAnswerAsync(Answer answer)
+        public async Task<bool> UpdateQuestionAsync(Question question)
         {
+            var response = await _httpClient.PutAsJsonAsync($"/api/Questions/{question.Id}", question);
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return false;
+            }
+
+            response.EnsureSuccessStatusCode();
+
+            return true;
+        }
+
+        #region Answer
+
+        public async Task<Answer> GetAnswerAsync(Guid answerId)
+        {
+            var response = await _httpClient.GetAsync($"/api/Answers/{answerId}");
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsAsync<Answer>();
+        }
+
+        public async Task<bool> AddAnswerAsync(Answer answer, string token)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _httpClient.PostAsJsonAsync("/api/Answers/", answer);
 
             if (response.StatusCode == HttpStatusCode.Conflict)
@@ -98,11 +121,11 @@ namespace StackOverflowWebApi.Services
             return true;
         }
 
-        public async Task<bool> UpdateQuestionAsync(Question question)
+        public async Task<bool> LikeAnswerAsync(Guid answerId, string username)
         {
-            var response = await _httpClient.PutAsJsonAsync($"/api/Questions/{question.Id}", question);
+            var response = await _httpClient.GetAsync($"/like?answerId={answerId}&username={username}");
 
-            if (response.StatusCode == HttpStatusCode.NotFound)
+            if (response.StatusCode == HttpStatusCode.Conflict)
             {
                 return false;
             }
@@ -111,6 +134,10 @@ namespace StackOverflowWebApi.Services
 
             return true;
         }
+
+        #endregion
+
+        #region User
 
         public async Task<User> GetUserDataAsync(string username)
         {
@@ -130,45 +157,6 @@ namespace StackOverflowWebApi.Services
             return await response.Content.ReadAsAsync<Guid>();
         }
 
-        public async Task<bool> Authenticate(string username, string password)
-        {
-            try
-            {
-                var response = await _httpClient.GetAsync($"/token?username={username}&password={password}");
-
-                response.EnsureSuccessStatusCode();
-
-                var headers = response.Headers;
-                string token = "";
-                if (headers.TryGetValues("token", out IEnumerable<string> headerValues))
-                {
-                    token = headerValues.FirstOrDefault();
-                }
-
-                _httpClient.DefaultRequestHeaders.Add("Authorization", token);
-
-                var response2 = await _httpClient.GetAsync($"/checkLogin?userName={username}");
-                
-
-                response2.EnsureSuccessStatusCode();
-
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public async Task<bool> UnAuthenticate(string inputUsername)
-        {
-            var response = await _httpClient.GetAsync($"/logOut?username={inputUsername}");
-
-            response.EnsureSuccessStatusCode();
-
-            return true;
-        }
 
         public async Task<bool> UpdateUserAsync(User user)
         {
@@ -198,18 +186,59 @@ namespace StackOverflowWebApi.Services
             return true;
         }
 
-        public async Task<bool> LikeAnswerAsync(Guid answerId,string username)
-        {
-            var response = await _httpClient.GetAsync($"/like?answerId={answerId}&username={username}");
+        #endregion
 
-            if (response.StatusCode == HttpStatusCode.Conflict)
+        #region Authenticate
+        public async Task<string> Authenticate(string username, string password)
+        {
+            try
             {
-                return false;
+                var response = await _httpClient.GetAsync($"/token?username={username}&password={password}");
+
+                response.EnsureSuccessStatusCode();
+
+                var headers = response.Headers;
+                var token = "";
+                if (headers.TryGetValues("token", out IEnumerable<string> headerValues))
+                {
+                    token = headerValues.FirstOrDefault();
+                }
+
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                 var cookieContainer = new CookieContainer();
+
+                cookieContainer.Add(new Uri("https://localhost:44328/"),new Cookie("token", token));
+
+                var response2 = await _httpClient.GetAsync($"/checkLogin?userName={username}");
+                
+
+                response2.EnsureSuccessStatusCode();
+
+                return token;
+
             }
+            catch (Exception e)
+            {
+                return null;
+                
+            }
+
+            
+        }
+
+        public async Task<bool> UnAuthenticate(string inputUsername)
+        {
+            var response = await _httpClient.GetAsync($"/logOut?username={inputUsername}");
 
             response.EnsureSuccessStatusCode();
 
             return true;
         }
+#endregion
+
+
+        
+
+
     }
 }

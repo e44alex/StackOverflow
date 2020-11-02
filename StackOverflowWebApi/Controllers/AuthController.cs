@@ -52,7 +52,7 @@ namespace StackOverflowWebApi.Controllers
                 username = identity.Name
             };
 
-            HttpContext.Response.Headers.Append("token", "Bearer " + encodedJwt);
+            HttpContext.Response.Headers.Append("token",encodedJwt);
 
             
 

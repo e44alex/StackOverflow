@@ -60,35 +60,43 @@
     <div class="mt-5">
         @foreach (var answer in Model.Question.Answers)
         {
-            <div class="card mb-2">
-                <div class="card-header">
-                    <a asp-page="User" asp-route-username="@answer.Creator.Login">@answer.Creator.Name @answer.Creator.Surname</a>
-                </div>
-                <div class="card-body">@answer.Body</div>
-                <div class="card-footer">
-                    <div class="row">
-                        <div class="col-sm-9">
-                            @answer.DateCreated
+            @try
+            {
+                <div class="card mb-2">
+                    <div class="card-header">
+                        <a asp-page="User" asp-route-username="@answer.Creator.Login">@answer.Creator.Name @answer.Creator.Surname</a>
+                    </div>
+                    <div class="card-body">@answer.Body</div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                @answer.DateCreated
 
-                        </div>
-                        <div class="col-sm-1">
-                            @if (Username != "")
-                            {
-                            <form method="post">
-                                <input type="hidden" asp-for="@answer.Id" />
-                                <input type="hidden" asp-for="Question.Id" />
-                                <input type="submit" class="btn btn-secondary" value="Like" asp-page-handler="Like" />
-                            </form>
-                            }
-                        </div>
-                        <div class="col-sm-2">
-                            <p>
-                                @answer.Users.Count() liked this
-                            </p>
+                            </div>
+                            <div class="col-sm-1">
+                                @if (Username != "")
+                                {
+                                    <form method="post">
+                                        <input type="hidden" asp-for="@answer.Id" />
+                                        <input type="hidden" asp-for="Question.Id" />
+                                        <input type="submit" class="btn btn-secondary" value="Like" asp-page-handler="Like" />
+                                    </form>
+                                }
+                            </div>
+                            <div class="col-sm-2">
+                                <p>
+                                    @answer.Users.Count() liked this
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
+            catch (Exception)
+            {
+
+            }
+            
         }
     </div>
 </div>

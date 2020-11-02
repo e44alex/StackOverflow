@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ApiFrontEnd\ApiFrontEnd.csproj" />
     <ProjectReference Include="..\StackOverflowWebApi\StackOverflowWebApi.csproj" />
     <ProjectReference Include="..\StackOverflow\StackOverflow.csproj" />
   </ItemGroup>

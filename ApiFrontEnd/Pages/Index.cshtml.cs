@@ -53,9 +53,8 @@ namespace ApiFrontEnd
             _apiClient = apiClient;
         }
 
-        public async Task OnGet(string? searchText, int page=1)
+        public async Task OnGet(string? searchText="")
         {
-            int pagesize = 3;
 
             Questions = await _apiClient.GetQuestionsAsync();
             Questions = Questions.OrderByDescending(x => x.LastActivity).ToList();
@@ -64,10 +63,6 @@ namespace ApiFrontEnd
                 Questions = Questions.Where(x => x.Topic.Contains(searchText)).ToList();
             }
 
-            var count = Questions.Count;
-            Questions = Questions.Skip((page - 1) * pagesize).Take(pagesize).ToList();
-
-            PageViewModel = new MyPageViewModel(count, page, pagesize);
         }
 
     }

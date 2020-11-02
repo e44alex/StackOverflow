@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ApiFrontEnd.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using StackOverflowWebApi.Models;
@@ -34,7 +35,9 @@ namespace ApiFrontEnd.Pages
 
             answer.Id = new Guid();
             answer.Question = await _apiClient.GetQuestionAsync(answer.Question.Id);
-            await _apiClient.AddAnswerAsync(answer);
+            string token = HttpContext.Request.Cookies["token"].Decrypt();
+
+            await _apiClient.AddAnswerAsync(answer ,token);
 
             return Redirect($"/Question?id={answer.Question.Id}");
         }

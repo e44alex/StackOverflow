@@ -11,13 +11,13 @@ namespace StackOverflowWebApi.Services
         Task<Question> GetQuestionAsync(Guid id);
         Task<Answer> GetAnswerAsync(Guid answerId);
         Task<List<Answer>> GetAnswersByQuestionAsync(Guid questionId);
-        Task<bool> AddQuestionAsync(Question question);
-        Task<bool> AddAnswerAsync(Answer answer);
+        Task<bool> AddQuestionAsync(Question question, string token);
+        Task<bool> AddAnswerAsync(Answer answer, string token);
         Task<bool> UpdateAnswerAsync(Answer answer);
         Task<bool> UpdateQuestionAsync(Question question);
         Task<User> GetUserDataAsync(string username);
         Task<Guid> GetUserIdAsync(string username);
-        Task<bool> Authenticate(string username, string password);
+        Task<string> Authenticate(string username, string password);
 
         Task<bool> UnAuthenticate(string inputUsername);
         Task<bool> UpdateUserAsync(User user);

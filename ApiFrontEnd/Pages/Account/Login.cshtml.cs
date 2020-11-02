@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using ApiFrontEnd.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -51,10 +52,11 @@ namespace StackOverflow.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            if (await _apiClient.Authenticate(Input.Username, Input.Password))
+            string token = await _apiClient.Authenticate(Input.Username, Input.Password);
+            if (!string.IsNullOrEmpty(token))
             {
                 
-                HttpContext.Response.Cookies.Append("token", "true");
+                HttpContext.Response.Cookies.Append("token", token.Encrypt());
                 HttpContext.Response.Cookies.Append("user", Input.Username);
                 return Redirect("~/");
             }
