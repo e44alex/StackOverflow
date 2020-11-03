@@ -86,7 +86,7 @@ namespace StackOverflowWebApi.Controllers
                 {
                     var claims = new List<Claim>
                     {
-                        new Claim(ClaimsIdentity.DefaultNameClaimType, user.Login),
+                        new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
                         new Claim(ClaimsIdentity.DefaultRoleClaimType, "user")
                     };
 
