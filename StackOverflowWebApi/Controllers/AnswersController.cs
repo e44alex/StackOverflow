@@ -139,7 +139,7 @@ namespace StackOverflowWebApi.Controllers
             var answer = await _context.Answers
                 .Include(x => x.Question)
                 .FirstOrDefaultAsync(x =>x.Id == answerId);
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Login == username);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == username);
 
             if (answer.Creator.Id == user.Id)
             {
@@ -162,9 +162,9 @@ namespace StackOverflowWebApi.Controllers
 
         private async Task<int?> SetUserRatingAsync(string userName)
         {
-            var totalQuestion = _context.Questions.Count(x => x.Creator.Login == userName);
-            var totalAnswers = _context.Answers.Count(x => x.Creator.Login == userName);
-            var likedAnswers = _context.Answers.Count(x => x.Creator.Login == userName && x.Users.Count > 0);
+            var totalQuestion = _context.Questions.Count(x => x.Creator.Email == userName);
+            var totalAnswers = _context.Answers.Count(x => x.Creator.Email == userName);
+            var likedAnswers = _context.Answers.Count(x => x.Creator.Email == userName && x.Users.Count > 0);
 
             float result = ((float)(totalQuestion + likedAnswers)) / (totalAnswers + totalQuestion);
             return (int?)Math.Round(result * 100);

@@ -121,8 +121,9 @@ namespace StackOverflowWebApi.Services
             return true;
         }
 
-        public async Task<bool> LikeAnswerAsync(Guid answerId, string username)
+        public async Task<bool> LikeAnswerAsync(Guid answerId, string username, string token)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _httpClient.GetAsync($"/like?answerId={answerId}&username={username}");
 
             if (response.StatusCode == HttpStatusCode.Conflict)
@@ -158,8 +159,9 @@ namespace StackOverflowWebApi.Services
         }
 
 
-        public async Task<bool> UpdateUserAsync(User user)
+        public async Task<bool> UpdateUserAsync(User user, string token)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _httpClient.PutAsJsonAsync($"/api/Users/{user.Id}", user);
 
             if (response.StatusCode == HttpStatusCode.NotFound)

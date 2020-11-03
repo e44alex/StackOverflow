@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using ApiFrontEnd.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using StackOverflowWebApi.Models;
@@ -17,7 +18,6 @@ namespace ApiFrontEnd.Pages.Account.Manage
         public IndexModel(IApiClient apiClient)
         {
             _apiClient = apiClient;
-            
         }
 
         public string Username { get; set; }
@@ -45,6 +45,10 @@ namespace ApiFrontEnd.Pages.Account.Manage
 
             [Display(Name = "Rating")]
             public float? Rating { get; set; }
+
+            public string Position { get; set; }
+            public float? Experience{ get; set; }
+            public string Bio{ get; set; }
         }
 
 
@@ -58,7 +62,10 @@ namespace ApiFrontEnd.Pages.Account.Manage
                 Name = user.Name,
                 Surname = user.Surname,
                 Login = user.Login,
-                Rating = user.Rating
+                Rating = user.Rating, 
+                Bio = user.Bio,
+                Experience = user.Exerience, 
+                Position = user.Position
             };
         }
 
@@ -77,10 +84,10 @@ namespace ApiFrontEnd.Pages.Account.Manage
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var user = await _apiClient.GetUserDataAsync(Username);
+            var user = await _apiClient.GetUserDataAsync(HttpContext.Request.Cookies["user"]);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_apiClient.GetUserIdAsync(Username)}'.");
+                return NotFound($"Unable to load user ");
             }
 
             if (!ModelState.IsValid)
@@ -93,8 +100,11 @@ namespace ApiFrontEnd.Pages.Account.Manage
             user.Surname = Input.Surname;
             user.PhoneNumber = Input.PhoneNumber;
             user.Login = Input.Login;
+            user.Bio = Input.Bio;
+            user.Position = Input.Position;
+            user.Exerience= Input.Experience;
 
-            await _apiClient.UpdateUserAsync(user);
+            await _apiClient.UpdateUserAsync(user, HttpContext.Request.Cookies["token"].Decrypt());
 
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
