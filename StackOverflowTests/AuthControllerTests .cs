@@ -17,16 +17,16 @@ namespace StackOverflowTests
 {
     public partial class Tests
     {
-        [Test]
-        public void AuthController_GetToken()
-        {
-            var controller = new AuthController(_context);
+        //[Test]
+        //public void AuthController_GetToken()
+        //{
+        //    var controller = new AuthController(_context);
             
-            _context.Add(new User() { Email = "e44alex@gmail.com", PasswordHash = AuthController.HashPassword("admin") });
-            var result = controller.Token("e44alex@gmail.com", "admin");
+        //    _context.Add(new User() { Email = "e44alex@gmail.com", PasswordHash = AuthController.HashPassword("admin") });
+        //    var result = controller.Token("e44alex@gmail.com", "admin");
 
-            Assert.IsInstanceOf<IActionResult>(result);
-        }
+        //    Assert.IsInstanceOf<IActionResult>(result);
+        //}
 
         [Test]
         public void AuthController_HashPassword()

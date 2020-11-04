@@ -34,12 +34,6 @@ namespace StackOverflowTests
         }
 
         [Test]
-        public void Test1()
-        {
-            Assert.Pass();
-        }
-
-        [Test]
         public void Test_QuestionsController_GetQuestions_ReturnsListOfQuestions()
         {
 
@@ -61,7 +55,7 @@ namespace StackOverflowTests
         }
 
         [Test]
-        public void Test_QuestionsController_PostQuestion()
+        public  void Test_QuestionsController_PostQuestion()
         {
             QuestionsController controller = new QuestionsController(_context);
 
@@ -71,9 +65,9 @@ namespace StackOverflowTests
                 Creator = _context.Users.FirstOrDefault(),
                 Body = "test",
                 Topic = "test"
-            }).Result.Value;
+            }).Result;
 
-            Assert.IsInstanceOf<Question>(result);
+            Assert.IsInstanceOf<ActionResult<Question>>(result);
         }
 
         [Test]
