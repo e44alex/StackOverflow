@@ -11,9 +11,12 @@ import { QuestionComponent } from './Question/Question.component';
 import { UserComponent } from './User/User.component';
 import { HomeComponent } from './Home/Home.component';
 import { FormsModule } from '@angular/forms';
+import { LoginPartialComponent } from './login-partial/login-partial.component';
+import { RegisterFormComponent } from './register-form/register-form.component';
+import { LoginFormComponent } from './login-form/login-form.component';
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, QuestionComponent, UserComponent],
+  declarations: [AppComponent, HomeComponent, QuestionComponent, UserComponent, LoginPartialComponent, RegisterFormComponent, LoginFormComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -25,6 +28,8 @@ import { FormsModule } from '@angular/forms';
       { path: '', component: HomeComponent },
       { path: 'Question/:id', component: QuestionComponent },
       { path: 'User/:id', component: UserComponent },
+      { path: 'Login', component: LoginFormComponent },
+      { path: 'Register', component: RegisterFormComponent },
     ]),
   ],
   providers: [],
