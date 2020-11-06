@@ -97,7 +97,6 @@ namespace StackOverflowTests
             Assert.AreEqual(oldQuestion, changedQuestion);
         }
 
-
         [Test]
         public void Test_QuestionsController_DeleteQuestion()
         {
@@ -109,7 +108,6 @@ namespace StackOverflowTests
 
             Assert.AreEqual(questionForDelete, result);
         }
-
 
     }
 }

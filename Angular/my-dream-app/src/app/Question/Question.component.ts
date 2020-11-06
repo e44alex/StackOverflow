@@ -27,6 +27,9 @@ export class QuestionComponent implements OnInit {
           .then((x) => (this.question = x));
       }
     });
+
+    document.getElementById("backDiv").attributes["height"]= "100%"
+
   }
 
   OnAnswerSubmit(form: NgForm){
@@ -45,5 +48,7 @@ export class QuestionComponent implements OnInit {
     this.question.answers.push(this.answer)
     console.log(this.question)
     this.dataService.sendAnswer(this.answer);
+
+    
   }
 }

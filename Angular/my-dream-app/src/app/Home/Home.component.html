@@ -1,15 +1,17 @@
-<div class="card text-left m-2" *ngFor="let question of questions">
-  <div class="card-header">
-    <h1 class="card-title">
-      <a [routerLink]="['/Question', question.id]">
-        {{question.topic}}
-      </a>
-    </h1>
-  </div>
-  <div class="card-body">
-    <p class="card-text">{{question.body}}</p>
-  </div>
-  <div class="card-footer">
-    Created by <a [routerLink]="['/User', question.creator.id]">{{question.creator.login}}</a> On {{question.dateCreated}}
+<div class="col-lg-10 offset-1">
+  <div class="card text-white m-2 bg-dark" *ngFor="let question of questions">
+    <div class="card-header">
+      <h1 class="card-title">
+        <a [routerLink]="['/Question', question.id]">
+          {{question.topic}}
+        </a>
+      </h1>
+    </div>
+    <div class="card-body">
+      <p class="card-text">{{question.body}}</p>
+    </div>
+    <div class="card-footer">
+      Created by <a [routerLink]="['/User', question.creator.id]">{{question.creator.login}}</a> On {{question.dateCreated}}
+    </div>
   </div>
 </div>

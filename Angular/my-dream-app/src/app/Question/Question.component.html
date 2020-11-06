@@ -1,15 +1,17 @@
+<div class="col-lg-10 offset-1">
 
-    <h2>{{question.topic}}</h2>
+
+    <h1 class="text-white">{{question.topic}}</h1>
     <div>
-      <p *ngIf="question.opened">
+      <p *ngIf="question.opened" class="text-white">
         Discussion is opened
       </p>
-      <p *ngIf="!question.opened">
+      <p *ngIf="!question.opened" class="text-white">
         Discussion closed
       </p>
     </div>
 
-    <div class="card mb-5">
+    <div class="card text-white mb-5 bg-dark">
       <div class="card-header">
         <h2>
           {{question.topic}}
@@ -22,11 +24,11 @@
     </div>
     <div>
       <h3>
-        <p><b>{{question.answers.length}} answers</b></p>
+        <p class="text-white">  <b>{{question.answers.length}} answers</b></p>
       </h3>
 
       <div class="mt-5" *ngFor="let answer of question.answers">
-        <div class="card mb-2">
+        <div class="card text-white m-2 bg-dark">
           <div class="card-header">
             <a href="/User/{{answer.creator.id}}">{{answer.creator.login}}</a>
           </div>
@@ -55,13 +57,14 @@
 
     <div *ngIf="question.opened">
       <div>
-        <h4>Add your own answer:</h4>
+        <h4 class="text-white">Add your own answer:</h4>
       </div>
       <div>
         <form #answerForm="ngForm"  (ngSubmit)="OnAnswerSubmit(answerForm)">
           <input name="questionId" hidden type="text" [(ngModel)]="question.id"/>
-          <textarea ngModel  required name="body" #body="ngModel" class="form-control mb-5" placeholder="Enter your answer"></textarea>
+          <textarea ngModel  required name="body" #body="ngModel" class="form-control mb-5 bg-dark text-white" placeholder="Enter your answer"></textarea>
           <input type="submit" value="Send" class="btn btn-primary"/>
         </form>
       </div>
     </div>
+</div>

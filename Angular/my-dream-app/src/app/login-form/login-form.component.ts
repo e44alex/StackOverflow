@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { AuthServiceService } from '../Shared/auth-service.service';
 
 @Component({
@@ -16,10 +17,13 @@ export class LoginFormComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  OnLogin(){
+  OnLogin(loginForm: NgForm){
     //loginService.Authenticate(username, password).then(() => {
 
     // })
+    
+    console.log(loginForm);
+    
   }
 
 }
