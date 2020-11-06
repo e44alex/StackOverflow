@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Answer, Question, User } from './Model';
-import { resolve } from 'dns';
-import { rejects } from 'assert';
 
 
 @Injectable({

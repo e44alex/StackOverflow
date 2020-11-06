@@ -4,6 +4,7 @@ import { DataServiceService } from '../Shared/data-service.service';
 import { Answer, Question, User } from '../Shared/Model';
 import { NgForm } from '@angular/forms'
 import { Guid } from 'guid-typescript';
+import { LoginPartialComponent } from '../login-partial/login-partial.component';
 
 @Component({
   selector: 'app-Question',
@@ -50,5 +51,9 @@ export class QuestionComponent implements OnInit {
     this.dataService.sendAnswer(this.answer);
 
     
+  }
+
+  get getAuth(){
+    return LoginPartialComponent.authenticated;
   }
 }

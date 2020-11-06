@@ -13,6 +13,10 @@ export class AddQuestionComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+
   }
 
+  SendQuestion(){
+    
+  }
 }
