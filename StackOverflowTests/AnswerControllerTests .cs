@@ -37,7 +37,7 @@ namespace StackOverflowTests
         }
         
         [Test]
-        public void Test_AnswersController_PostQuestion()
+        public void Test_AnswersController_PostAnswer()
         {
             AnswersController controller = new AnswersController(_context);
 
@@ -49,7 +49,7 @@ namespace StackOverflowTests
                 Body = "test"
             });
 
-            Assert.IsInstanceOf<ActionResult<Answer>>(result);
+            Assert.IsInstanceOf<ActionResult<Answer>>(result.Result);
         }
 
         [Test]
