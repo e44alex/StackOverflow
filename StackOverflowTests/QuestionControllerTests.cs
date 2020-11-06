@@ -15,7 +15,7 @@ using StackOverflowWebApi.Models;
 
 namespace StackOverflowTests
 {
-    public partial class Tests
+    public class QuestionControllerTests
     {
         private AppDbContext _context;
 
@@ -26,7 +26,7 @@ namespace StackOverflowTests
             builder.UseInMemoryDatabase("testDB1");
             _context = new AppDbContext(builder.Options);
 
-            _context.Add(new User(){Email = "e44alex@gmail.com", PasswordHash = AuthController.HashPassword("admin")});
+            _context.Add(new User() {Email = "e44alex@gmail.com", PasswordHash = AuthController.HashPassword("admin")});
             _context.Add(new Question());
             _context.Add(new Answer());
             _context.Add(new AnswerLiker());
@@ -55,7 +55,7 @@ namespace StackOverflowTests
         }
 
         [Test]
-        public  void Test_QuestionsController_PostQuestion()
+        public void Test_QuestionsController_PostQuestion()
         {
             QuestionsController controller = new QuestionsController(_context);
 
@@ -91,7 +91,7 @@ namespace StackOverflowTests
 
 
             var changedQuestion = _context.Questions.Find(questionForUpdate.Id);
-            
+
 
             //because of EF entity refs 
             Assert.AreEqual(oldQuestion, changedQuestion);

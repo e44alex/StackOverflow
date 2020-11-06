@@ -15,8 +15,23 @@ using StackOverflowWebApi.Models;
 
 namespace StackOverflowTests
 {
-    public partial class Tests
+    public  class AuthControllerTests
     {
+        private AppDbContext _context;
+
+        [SetUp]
+        public void Setup()
+        {
+            var builder = new DbContextOptionsBuilder<AppDbContext>();
+            builder.UseInMemoryDatabase("testDB1");
+            _context = new AppDbContext(builder.Options);
+
+            _context.Add(new User() { Email = "e44alex@gmail.com", PasswordHash = AuthController.HashPassword("admin") });
+            _context.Add(new Question());
+            _context.Add(new Answer());
+            _context.Add(new AnswerLiker());
+            _context.SaveChangesAsync();
+        }
 
         [Test]
         public void AuthController_HashPassword()
