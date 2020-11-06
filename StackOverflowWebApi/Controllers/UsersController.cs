@@ -59,7 +59,7 @@ namespace StackOverflowWebApi.Controllers
         [HttpGet("getId/{username}")]
         public async Task<ActionResult<Guid>> GetId(string username)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Login == username);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == username);
 
             return user.Id;
         }
