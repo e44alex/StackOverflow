@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
+import { AuthServiceService } from '../Shared/auth-service.service';
 
 @Component({
   selector: 'app-login-partial',
@@ -7,17 +10,44 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginPartialComponent implements OnInit {
 
-  email:string;
-  id:string;
-  authenticated:boolean;
+  static email:string;
+  static id:string;
+  static authenticated:boolean;
 
-  constructor() { }
+    constructor(private cookieService: CookieService,
+    private authService: AuthServiceService,
+    private router: Router) { }
 
   ngOnInit(): void {
-    //check cookies for email and token
-    //if cookies there => set authenticated to true
+
+    LoginPartialComponent.authenticated = (this.cookieService.check('token') && this.cookieService.check('username'));
+    LoginPartialComponent.email = this.cookieService.get('username')
+    
+    this.authService.getId(LoginPartialComponent.email).then((value:string)=>{
+      LoginPartialComponent.id = value
+    })
     console.log("login partial init");
     
+  }
+
+  OnLogout(){
+    LoginPartialComponent.authenticated =false;
+    LoginPartialComponent.email = "";
+    LoginPartialComponent.id = "";
+    this.cookieService.delete('token');
+    this.cookieService.delete('username');
+    this.router.navigate(['/']);
+  }
+
+  get getAuth(){
+    return LoginPartialComponent.authenticated;
+  }
+
+  get getEmail(){
+    return LoginPartialComponent.email;
+  }
+  get getID(){
+    return LoginPartialComponent.id;
   }
 
 }

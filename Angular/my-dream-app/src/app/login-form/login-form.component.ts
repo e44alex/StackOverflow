@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
+import { LoginPartialComponent } from '../login-partial/login-partial.component';
 import { AuthServiceService } from '../Shared/auth-service.service';
 
 @Component({
@@ -12,18 +15,50 @@ export class LoginFormComponent implements OnInit {
   username:string;
   password:string;
 
-  constructor(loginService: AuthServiceService) { }
+  constructor(private loginService: AuthServiceService,
+    private cookieService: CookieService,
+    private router: Router) { }
 
   ngOnInit(): void {
   }
 
   OnLogin(loginForm: NgForm){
-    //loginService.Authenticate(username, password).then(() => {
-
-    // })
+    this.loginService.authenticate(this.username, this.password)
+    .then((token:string) => {
+      console.log(token);
+      token = this.Encrypt(token);
+      console.log(this.Decrypt(token));
     
+      this.cookieService.set('token', token)
+      this.cookieService.set('username',this.username)
+     });
     console.log(loginForm);
-    
+    LoginPartialComponent.authenticated = true;
+    LoginPartialComponent.email = this.username;
+    this.loginService.getId(this.username).then((value: string) => {
+      LoginPartialComponent.id = value
+    });
+    this.router.navigate(['/']);
+  }
+
+  Encrypt(token: string): string{
+    let returnVal= "";
+
+    for (let index = 0; index < token.length; index++) {
+       returnVal += String.fromCharCode(token.charCodeAt(index) +5);
+    }
+
+    return returnVal;
+  }
+
+  Decrypt(token: string): string{
+    let returnVal ="";
+
+    for (let index = 0; index < token.length; index++) {
+      returnVal += String.fromCharCode(token.charCodeAt(index) - 5);
+    }
+
+    return returnVal;
   }
 
 }

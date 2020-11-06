@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { LoginPartialComponent } from './login-partial/login-partial.component';
 import { RegisterFormComponent } from './register-form/register-form.component';
 import { LoginFormComponent } from './login-form/login-form.component';
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, QuestionComponent, UserComponent, LoginPartialComponent, RegisterFormComponent, LoginFormComponent],
@@ -32,7 +33,7 @@ import { LoginFormComponent } from './login-form/login-form.component';
       { path: 'Register', component: RegisterFormComponent },
     ]),
   ],
-  providers: [],
+  providers: [CookieService],
 
   bootstrap: [AppComponent],
 })

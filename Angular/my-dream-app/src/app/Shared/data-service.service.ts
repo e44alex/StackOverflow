@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Answer, Question } from './Model';
+import { Answer, Question, User } from './Model';
+import { resolve } from 'dns';
+import { rejects } from 'assert';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataServiceService {
+  
 
   constructor(private http: HttpClient) { }
 
@@ -63,6 +66,13 @@ export class DataServiceService {
         console.log(error)
       }
     });
-    
+  }
+
+  getUser(id: string): Promise<User> {
+    return new Promise((resolve, reject)=> {
+      this.http.get('https://localhost:44360/api/Users/'+id).subscribe((data:User)=> {
+        return resolve(data)
+      })
+    })
   }
 }

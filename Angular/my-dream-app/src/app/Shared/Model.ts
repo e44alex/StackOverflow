@@ -4,8 +4,11 @@ import { Guid } from 'guid-typescript';
 export class User {
     id: string;
     login: string;
+    phoneNumber: string
     email:string;
     rating: number;
+    dateRegistered: Date;
+    exerience: number
 }
 
 export class Question{
