@@ -15,9 +15,10 @@ import { LoginPartialComponent } from './login-partial/login-partial.component';
 import { RegisterFormComponent } from './register-form/register-form.component';
 import { LoginFormComponent } from './login-form/login-form.component';
 import { CookieService } from 'ngx-cookie-service';
+import { AddQuestionComponent } from './add-question/add-question.component';
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, QuestionComponent, UserComponent, LoginPartialComponent, RegisterFormComponent, LoginFormComponent],
+  declarations: [AppComponent, HomeComponent, QuestionComponent, UserComponent, LoginPartialComponent, RegisterFormComponent, LoginFormComponent, AddQuestionComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -31,6 +32,7 @@ import { CookieService } from 'ngx-cookie-service';
       { path: 'User/:id', component: UserComponent },
       { path: 'Login', component: LoginFormComponent },
       { path: 'Register', component: RegisterFormComponent },
+      { path: 'AskQuestion', component: AddQuestionComponent },
     ]),
   ],
   providers: [CookieService],

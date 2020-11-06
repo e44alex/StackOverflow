@@ -1,0 +1,19 @@
+<form >
+    <div class="form-group">
+        <label for="topic">Question topic</label>
+        <input required id="topic" class="form-control" type="text" name="" [(ngModel)]="questionTopic" #topic="ngModel">
+        <div class="text text-danger" [hidden]="topic.untouched || topic.valid">
+            Topic required in order to help others to know what you're asking about
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="body">Question:</label>
+        <textarea required id="body" class="form-control" type="text" name="" [(ngModel)]="questionBody" #body="ngModel"></textarea> 
+        <div class="text text-danger" [hidden]="body.untouched || body.valid">
+            Say some world to help others to understand your question
+        </div>
+    </div>
+    <div>
+        <button type="submit" class="btn btn-primary"></button>
+    </div>
+</form>
