@@ -4,6 +4,8 @@ import { Guid } from 'guid-typescript';
 export class User {
     id: string;
     login: string;
+    name:string;
+    surname:string;
     phoneNumber: string
     email:string;
     rating: number;
@@ -28,7 +30,7 @@ export class Answer{
     body:string;
     dateCreated: Date;
     creator: User;
-    likers: User[];
+    users: User[];
 }
 
 export class AnswerLiker{

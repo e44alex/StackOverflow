@@ -35,18 +35,19 @@
           <div class="card-body">{{answer.body}}</div>
           <div class="card-footer">
             <div class="row">
-              <div class="col-sm-9">
+              <div class="col-sm-8">
                 Created on {{answer.dateCreated}}
-              </div>
-              <div class="col-sm-1">
-                <form method="post" asp-page-handler="OnLike">
-                  <input type="button" class="btn btn-secondary" value="Like" />
-                </form>
               </div>
               <div class="col-sm-2">
                 <p>
-                  <!-- {{answer.likers.length}} Liked this -->
+                  {{answer.users.length}} Liked this
                 </p>
+              </div>
+              
+              <div class="col-sm-2" *ngIf="getAuth">
+                <form method="post" >
+                  <input type="button" class="btn btn-secondary" value="Like" (click)='OnLikeButton(answer.id)' />
+                </form>
               </div>
             </div>
           </div>
