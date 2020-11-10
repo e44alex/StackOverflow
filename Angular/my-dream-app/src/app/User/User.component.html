@@ -29,7 +29,7 @@
                   <h2 class="text-white">First name</h2>
                 </label>
                 <input type="text" class="form-control" name="first_name" id="first_name" placeholder="first name"
-                  title="enter your first name if any." [(ngModel)]="user.name">
+                  title="enter your first name if any." [(ngModel)]="user.name" [disabled]="(getId == user.id) ? true : false">
               </div>
             </div>
             <div class="form-group">
@@ -39,7 +39,7 @@
                   <h2 class="text-white">Last name</h2>
                 </label>
                 <input type="text" class="form-control" name="last_name" id="last_name" placeholder="last name"
-                  title="enter your last name if any." [(ngModel)]="user.surname">
+                  title="enter your last name if any." [(ngModel)]="user.surname" [disabled]="(getId == user.id) ? true : false">
               </div>
             </div>
 
@@ -50,7 +50,7 @@
                   <h2 class="text-white"> Phone</h2>
                 </label>
                 <input type="text" class="form-control" name="phone" id="phone" placeholder="enter phone"
-                  title="enter your phone number if any." [(ngModel)]="user.phoneNumber">
+                  title="enter your phone number if any." [(ngModel)]="user.phoneNumber" [disabled]="(getId == user.id) ? true : false">
               </div>
             </div>
 
@@ -62,7 +62,7 @@
                   <h2 class="text-white">Email</h2>
                 </label>
                 <input disabled type="email" class="form-control" name="email" id="email" placeholder="you@email.com"
-                  title="enter your email." [(ngModel)]="user.email">
+                  title="enter your email." [(ngModel)]="user.email" [disabled]="(getId == user.id) ? true : false">
               </div>
             </div>
             <div class="form-group">
@@ -72,7 +72,7 @@
                   <h2 class="text-white">Password</h2>
                 </label>
                 <input type="password" class="form-control" name="password" id="password" placeholder="password"
-                  title="enter your password.">
+                  title="enter your password." [disabled]="(getId == user.id) ? true : false">
               </div>
             </div>
             <div class="form-group">
@@ -82,15 +82,15 @@
                   <h2 class="text-white">Verify</h2>
                 </label>
                 <input type="password" class="form-control" name="password2" id="password2" placeholder="password2"
-                  title="enter your password2.">
+                  title="re-enter your password." [disabled]="(getId == user.id) ? true : false">
               </div>
             </div>
             <div class="form-group">
               <div class="col-xs-12">
                 <br>
-                <button class="btn btn-lg btn-success" type="submit"><i class="glyphicon glyphicon-ok-sign"></i>
+                <button class="btn btn-lg btn-success" type="submit" (click)="OnSaveButton()"><i class="glyphicon glyphicon-ok-sign" ></i>
                   Save</button>
-                <button class="btn btn-lg btn-danger ml-5" type="reset"><i class="glyphicon glyphicon-repeat"></i> Reset</button>
+                <button class="btn btn-lg btn-danger ml-5" type="reset" (click)="OnResetButton()"><i class="glyphicon glyphicon-repeat"></i> Reset</button>
               </div>
             </div>
           </form>

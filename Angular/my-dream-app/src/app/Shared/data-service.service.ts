@@ -125,4 +125,16 @@ export class DataServiceService {
         },
       });
   }
+
+  updateUser(user: User, token:string){
+    this.http.put(`https://localhost:44360/id=${user.id}`, user).subscribe({
+      next: (data) => {
+        console.log(data);
+      },
+      error: (error) => {
+        console.log(error);
+        alert('Not allowed')
+      },
+    });
+  }
 }

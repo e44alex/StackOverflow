@@ -1,19 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
+import { LoginPartialComponent } from '../login-partial/login-partial.component';
 import { DataServiceService } from '../Shared/data-service.service';
+import { Encryption } from '../Shared/Encryption';
 import { User } from '../Shared/Model';
 
 @Component({
   selector: 'app-User',
   templateUrl: './User.component.html',
-  styleUrls: ['./User.component.scss']
+  styleUrls: ['./User.component.scss'],
 })
 export class UserComponent implements OnInit {
-
   user: User;
 
-  constructor(private dataService: DataServiceService,
-    private route: ActivatedRoute ) { }
+  constructor(
+    private dataService: DataServiceService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private cookieService: CookieService
+  ) {}
 
   ngOnInit() {
     this.route.params.forEach((param: Params) => {
@@ -22,6 +28,27 @@ export class UserComponent implements OnInit {
           .getUser(param['id'])
           .then((user) => (this.user = user));
       }
-    })
+    });
+  }
+
+  OnSaveButton() {
+    this.dataService.updateUser(
+      this.user,
+      Encryption.Decrypt(this.cookieService.get('token'))
+    );
+  }
+
+  OnResetButton() {
+    this.router
+      .navigate(['/'])
+      .then(() => this.router.navigate(['/User', this.user.id]));
+  }
+
+  get getId(){
+    return LoginPartialComponent.id;
+  }
+
+  get getAuth(){
+    return LoginPartialComponent.authenticated;
   }
 }
