@@ -127,13 +127,18 @@ export class DataServiceService {
   }
 
   updateUser(user: User, token:string){
-    this.http.put(`https://localhost:44360/id=${user.id}`, user).subscribe({
+    const headers = {
+      headers: new HttpHeaders({
+        accept: '*/*',
+        Authorization: 'Bearer ' + token,
+      }),
+    };
+    this.http.put(`https://localhost:44360/api/Users/${user.id}`, user, headers).subscribe({
       next: (data) => {
         console.log(data);
       },
       error: (error) => {
         console.log(error);
-        alert('Not allowed')
       },
     });
   }

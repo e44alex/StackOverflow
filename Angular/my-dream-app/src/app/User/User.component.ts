@@ -13,7 +13,7 @@ import { User } from '../Shared/Model';
 })
 export class UserComponent implements OnInit {
   user: User;
-
+  isOwner: boolean;
   constructor(
     private dataService: DataServiceService,
     private route: ActivatedRoute,
@@ -26,9 +26,26 @@ export class UserComponent implements OnInit {
       if (param['id'] !== undefined) {
         this.dataService
           .getUser(param['id'])
-          .then((user) => (this.user = user));
+          .then((user) => {
+            this.user = user
+
+            if (user.email == this.getEmail) {
+              this.isOwner = true;
+            }
+            else{
+              this.isOwner = false;
+              console.log(this.user.id)
+              console.log(this.getId)
+            }
+
+          });
       }
     });
+
+    
+
+    console.log(this.isOwner)
+    
   }
 
   OnSaveButton() {
@@ -50,5 +67,9 @@ export class UserComponent implements OnInit {
 
   get getAuth(){
     return LoginPartialComponent.authenticated;
+  }
+
+  get getEmail(){
+    return LoginPartialComponent.email;
   }
 }
