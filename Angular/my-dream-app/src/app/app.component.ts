@@ -9,6 +9,8 @@ import { LoginPartialComponent } from './login-partial/login-partial.component';
 export class AppComponent {
   title = 'my-dream-app';
 
+  searchText: string;
+
   get getAuth(){
     return LoginPartialComponent.authenticated
   }

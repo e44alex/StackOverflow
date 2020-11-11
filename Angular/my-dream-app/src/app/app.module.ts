@@ -28,6 +28,7 @@ import { AddQuestionComponent } from './add-question/add-question.component';
     NgbModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent },
+      { path: 'Home/:searchText', component: HomeComponent },
       { path: 'Question/:id', component: QuestionComponent },
       { path: 'User/:id', component: UserComponent },
       { path: 'Login', component: LoginFormComponent },

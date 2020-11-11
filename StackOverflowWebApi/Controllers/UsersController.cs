@@ -78,6 +78,13 @@ namespace StackOverflowWebApi.Controllers
                 return BadRequest();
             }
 
+            //password changed
+            var prevPassword = _context.Users.FirstOrDefault(u => u.Id == id)?.PasswordHash;
+            if (user.PasswordHash != prevPassword)
+            {
+                user.PasswordHash = AuthController.HashPassword(user.PasswordHash);
+            }
+
             _context.Entry(user).State = EntityState.Modified;
 
             try

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { DataServiceService } from '../Shared/data-service.service';
 import { Answer, Question, User } from '../Shared/Model';
@@ -24,14 +24,27 @@ export class QuestionComponent implements OnInit {
     private router: Router
   ) {}
 
+  
+  
+
   ngOnInit() {
     console.log('question OnInit');
-
     this.route.params.forEach((param: Params) => {
       if (param['id'] !== undefined) {
         this.dataService
           .getQuestion(param['id'])
-          .then((x) => (this.question = x));
+          .then((x) => {
+            this.question = x;
+            this.question.answers.sort( (a, b) => {
+              if(a.dateCreated > b.dateCreated){
+                return 1;
+              }
+              if(a.dateCreated < b.dateCreated){
+                return -1;
+              }
+              return 0;
+            })
+          });
       }
     });
   }

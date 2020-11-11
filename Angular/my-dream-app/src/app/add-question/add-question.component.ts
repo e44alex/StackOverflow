@@ -36,6 +36,8 @@ export class AddQuestionComponent implements OnInit {
     question.creator.id = LoginPartialComponent.id;
 
     this.apiClient.sendQuestion(question, Encryption.Decrypt(this.cookieService.get('token')));
+  
+    setTimeout(()=>{}, 150);
 
     this.router.navigate(['/Question', question.id]);
 
