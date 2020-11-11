@@ -69,6 +69,26 @@
             </div>
 
             <div class="form-group">
+              <div class="col-xs-6">
+                <label for="phone">
+                  <h2 class="text-white"> Position</h2>
+                </label>
+                <input type="text" class="form-control" name="pos" id="pos" placeholder="enter phone"
+                  title="enter your phone number if any." [(ngModel)]="user.position" [disabled]="!isOwner">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="col-xs-6">
+                <label for="phone">
+                  <h2 class="text-white"> Experience</h2>
+                </label>
+                <input type="number" step="0.5" class="form-control" name="exp" id="exp" placeholder="enter phone"
+                  title="enter your phone number if any." [(ngModel)]="user.exerience" [disabled]="!isOwner">
+              </div>
+            </div>
+
+            <div class="form-group">
               <div class="col-xs-6" *ngIf="isOwner">
                 <label for="password">
                   <h2 class="text-white">Password</h2>
@@ -89,6 +109,13 @@
             </div>
 
             <div class="form-group">
+              <label asp-for="Input.Rating"></label>
+              <div class="progress">
+                  <div class="progress-bar" role="progressbar" [ngStyle]="{'width': user.rating}"  aria-valuemin="0" aria-valuemax="100">{{user.rating}}</div>
+              </div>
+            </div>
+
+            <div class="form-group">
               <div class="col-xs-12">
                 <br>
                 <button class="btn btn-lg btn-success" type="submit" (click)="OnSaveButton()"><i
@@ -98,6 +125,8 @@
                     class="glyphicon glyphicon-repeat"></i> Reset</button>
               </div>
             </div>
+
+            
 
           </form>
 

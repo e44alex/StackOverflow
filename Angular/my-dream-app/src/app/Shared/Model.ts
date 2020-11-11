@@ -10,7 +10,8 @@ export class User {
     email:string;
     rating: number;
     dateRegistered: Date;
-    exerience: number
+    exerience: number;
+    position: string
 }
 
 export class Question{

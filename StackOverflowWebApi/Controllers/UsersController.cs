@@ -85,7 +85,7 @@ namespace StackOverflowWebApi.Controllers
                 user.PasswordHash = AuthController.HashPassword(user.PasswordHash);
             }
 
-            _context.Entry(user).State = EntityState.Modified;
+            //_context.Entry(user).State = EntityState.Modified;
 
             try
             {
