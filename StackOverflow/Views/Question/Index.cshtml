@@ -1,8 +1,8 @@
-﻿@model StackOverflow.Models.Question
+﻿@model Question
 
 @{
     ViewBag.Title = "title";
-    Layout = @Layout;
+    Layout = Layout;
 
     var userName = User.Identity.Name;
 }
@@ -40,7 +40,7 @@
 
 <div>
     <h4>
-        @if (@Model.Answers != null)
+        @if (Model.Answers != null)
         {
             <p>@Model.Answers.Count answers</p>
         }

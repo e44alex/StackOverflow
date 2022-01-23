@@ -1,93 +1,89 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using StackOverflow.Models;
 
-namespace StackOverflow.Controllers
+namespace StackOverflow.Controllers;
+
+public class AnswerController : Controller
 {
-    public class AnswerController : Controller
+    private AppDbContext _context;
+    private readonly UserManager<User> _userManager;
+
+    public AnswerController(AppDbContext context, UserManager<User> userManager)
     {
-        private AppDbContext _context;
-        private UserManager<User> _userManager;
+        _context = context;
+        _userManager = userManager;
+    }
 
-        public AnswerController(AppDbContext context, UserManager<User> userManager)
+    // POST: Answer/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult> Create([Bind("Body")] Answer answer)
+    {
+        try
         {
-            _context = context;
-            _userManager = userManager;
-        }
-
-        // POST: Answer/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind("Body")] Answer answer)
-        {
-            try
+            if (answer != null)
             {
-                if (answer != null)
-                {
-                    answer.DateCreated = DateTime.Now;
-                    answer.Creator = await _userManager.FindByNameAsync(User.Identity.Name);
-                    answer.Id = new Guid();
-                }
-
-               
-
-                return RedirectToAction(nameof(Index), nameof(QuestionController));
+                answer.DateCreated = DateTime.Now;
+                answer.Creator = await _userManager.FindByNameAsync(User.Identity.Name);
+                answer.Id = new Guid();
             }
-            catch
-            {
-                return View();
-            }
+
+
+            return RedirectToAction(nameof(Index), nameof(QuestionController));
         }
-
-        // GET: Answer/Edit/5
-        public ActionResult Edit(int id)
+        catch
         {
             return View();
         }
+    }
 
-        // POST: Answer/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+    // GET: Answer/Edit/5
+    public ActionResult Edit(int id)
+    {
+        return View();
+    }
+
+    // POST: Answer/Edit/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult Edit(int id, IFormCollection collection)
+    {
+        try
         {
-            try
-            {
-                // TODO: Add update logic here
+            // TODO: Add update logic here
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction(nameof(Index));
         }
-
-        // GET: Answer/Delete/5
-        public ActionResult Delete(int id)
+        catch
         {
             return View();
         }
+    }
 
-        // POST: Answer/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+    // GET: Answer/Delete/5
+    public ActionResult Delete(int id)
+    {
+        return View();
+    }
+
+    // POST: Answer/Delete/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult Delete(int id, IFormCollection collection)
+    {
+        try
         {
-            try
-            {
-                // TODO: Add delete logic here
+            // TODO: Add delete logic here
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction(nameof(Index));
+        }
+        catch
+        {
+            return View();
         }
     }
 }

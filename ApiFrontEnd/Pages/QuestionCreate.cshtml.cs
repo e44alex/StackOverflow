@@ -1,42 +1,38 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using ApiFrontEnd.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using StackOverflowWebApi.Models;
 using StackOverflowWebApi.Services;
 
-namespace ApiFrontEnd.Pages
+namespace ApiFrontEnd.Pages;
+
+public class QuestionCreateModel : PageModel
 {
-    public class QuestionCreateModel : PageModel
+    private readonly IApiClient _apiClient;
+
+    public QuestionCreateModel(IApiClient apiClient)
     {
-        private readonly IApiClient _apiClient;
+        _apiClient = apiClient;
+    }
 
-        public QuestionCreateModel(IApiClient apiClient)
+    public Question Question { get; set; }
+
+    public async Task<RedirectResult> OnPostAsync(Question question)
+    {
+        var user = new User
         {
-            _apiClient = apiClient;
-        }
+            Id = await _apiClient.GetUserIdAsync(HttpContext.Request.Cookies["user"])
+        };
 
-        public Question Question { get; set; }
+        question.Creator = user;
+        question.Id = Guid.NewGuid();
 
-        public async Task<RedirectResult> OnPostAsync(Question question)
-        {
-            var user = new User()
-            {
-                Id = await _apiClient.GetUserIdAsync(HttpContext.Request.Cookies["user"])
-            };
-            
-            question.Creator = user;
-            question.Id = Guid.NewGuid();
+        var token = HttpContext.Request.Cookies["token"].Decrypt();
 
-            string token = HttpContext.Request.Cookies["token"].Decrypt();
+        await _apiClient.AddQuestionAsync(question, token);
 
-            await _apiClient.AddQuestionAsync(question, token);
-
-            return Redirect($"/Question?id={question.Id}");
-        }
+        return Redirect($"/Question?id={question.Id}");
     }
 }

@@ -2,7 +2,7 @@
 @model ApiFrontEnd.IndexModel
 @{
     Layout = "_Layout";
-    string Username = "";
+    var Username = "";
 
     try
     {
@@ -14,9 +14,9 @@
     }
 }
 
-<form class="form-inline" method="get" > 
+<form class="form-inline" method="get">
     <span class="ml-5">
-        <input name="searchText" class="form-control form-control-lg ml-3" type="text" placeholder="Search" aria-label="Search" >
+        <input name="searchText" class="form-control form-control-lg ml-3" type="text" placeholder="Search" aria-label="Search">
     </span>
     <span>
         <input type="submit" value="Search" class="btn btn-secondary"/>

@@ -8,11 +8,11 @@
 
 <div class="card">
     <form method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"/>
         <div class="card-header">
             <div class="form-group form-group-lg">
                 <label asp-for="@Model.Question.Topic" class="control-label"></label>
-                <input asp-for="@Model.Question.Topic" class="form-control" placeholder="Enter a topic..." />
+                <input asp-for="@Model.Question.Topic" class="form-control" placeholder="Enter a topic..."/>
                 <span asp-validation-for="@Model.Question.Topic" class="text-danger"></span>
             </div>
         </div>
@@ -30,7 +30,7 @@
             </div>
         </div>
         <div class="card-footer">
-            <input type="submit" value="Create" class="btn btn-primary" />
+            <input type="submit" value="Create" class="btn btn-primary"/>
         </div>
     </form>
 </div>
@@ -40,5 +40,5 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
