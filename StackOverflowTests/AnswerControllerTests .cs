@@ -1,99 +1,92 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
-using StackOverflow.Controllers;
+using StackOverflow.Common.Models;
 using StackOverflowWebApi.Controllers;
 using StackOverflowWebApi.Models;
+using System;
+using System.Linq;
 
+namespace StackOverflowTests;
 
-namespace StackOverflowTests
+public class AnswersControllerTests
 {
-    public class AnswersControllerTests
+    private AppDbContext _context;
+
+    [SetUp]
+    public void Setup()
     {
-        private AppDbContext _context;
+        var builder = new DbContextOptionsBuilder<AppDbContext>();
+        builder.UseInMemoryDatabase("testDB1");
+        _context = new AppDbContext(builder.Options);
 
-        [SetUp]
-        public void Setup()
+        _context.Add(new User { Email = "e44alex@gmail.com", PasswordHash = AuthController.HashPassword("admin") });
+        _context.Add(new Question());
+        _context.Add(new Answer());
+        _context.Add(new AnswerLiker());
+        _context.SaveChangesAsync();
+    }
+
+    [Test]
+    public void Test_AnswersController_GetAnswers_ReturnsListOfAnswers()
+    {
+        var controller = new AnswersController(_context);
+
+        var result = controller.GetAnswers();
+
+        Assert.IsNotEmpty(result.Result.Value);
+    }
+
+    [Test]
+    public void Test_AnswersController_GetAnswerById_ReturnsQuestion()
+    {
+        var controller = new AnswersController(_context);
+
+        var result = controller.GetAnswer(_context.Answers.Select(x => x.Id).FirstOrDefault());
+        Assert.IsInstanceOf<Answer>(result.Result.Value);
+    }
+
+    [Test]
+    public void Test_AnswersController_PostAnswer()
+    {
+        var controller = new AnswersController(_context);
+
+        var result = controller.PostAnswer(new Answer
         {
-            var builder = new DbContextOptionsBuilder<AppDbContext>();
-            builder.UseInMemoryDatabase("testDB1");
-            _context = new AppDbContext(builder.Options);
+            Id = Guid.NewGuid(),
+            Question = _context.Questions.FirstOrDefault(),
+            Creator = _context.Users.FirstOrDefault(),
+            Body = "test"
+        });
 
-            _context.Add(new User() { Email = "e44alex@gmail.com", PasswordHash = AuthController.HashPassword("admin") });
-            _context.Add(new Question());
-            _context.Add(new Answer());
-            _context.Add(new AnswerLiker());
-            _context.SaveChangesAsync();
-        }
+        Assert.IsInstanceOf<ActionResult<Answer>>(result.Result);
+    }
 
-        [Test]
-        public void Test_AnswersController_GetAnswers_ReturnsListOfAnswers()
-        {
+    [Test]
+    public void Test_AnswersController_PutAnswer()
+    {
+        var controller = new AnswersController(_context);
 
-            AnswersController controller = new AnswersController(_context);
+        var answer = _context.Answers.FirstOrDefault();
 
-            var result = controller.GetAnswers();
+        var result = controller.PutAnswer(answer.Id, answer);
 
-            Assert.IsNotEmpty(result.Result.Value);
-        }
+        var changedQuestion = _context.Answers.Find(answer.Id);
 
-        [Test]
-        public void Test_AnswersController_GetAnswerById_ReturnsQuestion()
-        {
-            AnswersController controller = new AnswersController(_context);
-
-            var result = controller.GetAnswer(_context.Answers.Select(x => x.Id).FirstOrDefault());
-            Assert.IsInstanceOf<Answer>(result.Result.Value);
-        }
-        
-        [Test]
-        public void Test_AnswersController_PostAnswer()
-        {
-            AnswersController controller = new AnswersController(_context);
-
-            var result = controller.PostAnswer(new Answer()
-            {
-                Id= Guid.NewGuid(),
-                Question = _context.Questions.FirstOrDefault(),
-                Creator = _context.Users.FirstOrDefault(),
-                Body = "test"
-            });
-
-            Assert.IsInstanceOf<ActionResult<Answer>>(result.Result);
-        }
-
-        [Test]
-        public void Test_AnswersController_PutAnswer()
-        {
-            AnswersController controller = new AnswersController(_context);
-
-            var answer = _context.Answers.FirstOrDefault();
-
-            var result = controller.PutAnswer(answer.Id, answer);
-
-            var changedQuestion = _context.Answers.Find(answer.Id);
-
-            //because of EF entity refs 
-            Assert.AreEqual(answer, changedQuestion);
-        }
+        //because of EF entity refs 
+        Assert.AreEqual(answer, changedQuestion);
+    }
 
 
-        [Test]
-        public void Test_AnswersController_DeleteQuestion()
-        {
-            AnswersController controller = new AnswersController(_context);
+    [Test]
+    public void Test_AnswersController_DeleteQuestion()
+    {
+        var controller = new AnswersController(_context);
 
-            var questionForDelete = _context.Answers.FirstOrDefault();
+        var questionForDelete = _context.Answers.FirstOrDefault();
 
-            var result = controller.DeleteAnswer(questionForDelete.Id).Result.Value;
+        var result = controller.DeleteAnswer(questionForDelete.Id).Result.Value;
 
-            Assert.AreEqual(questionForDelete, result);
-        }
+        Assert.AreEqual(questionForDelete, result);
     }
 }

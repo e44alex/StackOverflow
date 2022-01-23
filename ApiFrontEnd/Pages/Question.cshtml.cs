@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using ApiFrontEnd.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -8,45 +6,45 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using StackOverflowWebApi.Models;
 using StackOverflowWebApi.Services;
 
-namespace ApiFrontEnd.Pages
+namespace ApiFrontEnd.Pages;
+
+public class QuestionModel : PageModel
 {
-    public class QuestionModel : PageModel
+    private readonly IApiClient _apiClient;
+
+    public QuestionModel(IApiClient apiClient)
     {
-        private readonly IApiClient _apiClient;
+        _apiClient = apiClient;
+    }
 
-        public Question Question { get; set; }
+    public Question Question { get; set; }
 
-        public QuestionModel(IApiClient apiClient)
+    public async Task OnGet(Guid id)
+    {
+        Question = await _apiClient.GetQuestionAsync(id);
+    }
+
+    public async Task<RedirectResult> OnPost(Guid questionId, Answer answer)
+    {
+        answer.Creator = new User
         {
-            _apiClient = apiClient;
-        }
+            Id = await _apiClient.GetUserIdAsync(HttpContext.Request.Cookies["user"])
+        };
 
-        public async Task OnGet(Guid id)
-        {
-            Question = await _apiClient.GetQuestionAsync(id);
-        }
+        answer.Id = new Guid();
+        answer.Question = await _apiClient.GetQuestionAsync(answer.Question.Id);
+        var token = HttpContext.Request.Cookies["token"].Decrypt();
 
-        public async Task<RedirectResult> OnPost(Guid questionId ,Answer answer)
-        {
-            answer.Creator = new User()
-            {
-                Id = await _apiClient.GetUserIdAsync(HttpContext.Request.Cookies["user"])
-            };
+        await _apiClient.AddAnswerAsync(answer, token);
 
-            answer.Id = new Guid();
-            answer.Question = await _apiClient.GetQuestionAsync(answer.Question.Id);
-            string token = HttpContext.Request.Cookies["token"].Decrypt();
+        return Redirect($"/Question?id={answer.Question.Id}");
+    }
 
-            await _apiClient.AddAnswerAsync(answer ,token);
+    public async Task<RedirectResult> OnPostLike(Answer answer, Question question)
+    {
+        await _apiClient.LikeAnswerAsync(answer.Id, HttpContext.Request.Cookies["user"],
+            HttpContext.Request.Cookies["token"].Decrypt());
 
-            return Redirect($"/Question?id={answer.Question.Id}");
-        }
-
-        public async Task<RedirectResult> OnPostLike(Answer answer, Question question)
-        {
-            await _apiClient.LikeAnswerAsync(answer.Id, HttpContext.Request.Cookies["user"], HttpContext.Request.Cookies["token"].Decrypt());
-
-            return Redirect($"/Question?id={question.Id}");
-        }
+        return Redirect($"/Question?id={question.Id}");
     }
 }

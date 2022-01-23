@@ -1,8 +1,8 @@
-﻿@model StackOverflow.Models.User
+﻿@model User
 
 @{
     ViewData["Title"] = Model.Name + " " + Model.Surname;
-    Layout = @Layout;
+    Layout = Layout;
 
 }
 
@@ -11,19 +11,19 @@
 <form>
     <div class="form-group row">
         <label asp-for="Email" class="col-md-3 col-form-label"></label>
-        <input asp-for="Email" class="form-control" type="email" name="name" disabled="disabled" />
+        <input asp-for="Email" class="form-control" type="email" name="name" disabled="disabled"/>
     </div>
     <div class="form-group row">
         <label asp-for="PhoneNumber" class="col-md-3 col-form-label"></label>
-        <input asp-for="PhoneNumber" class="form-control" type="tel" name="name" disabled="disabled" />
+        <input asp-for="PhoneNumber" class="form-control" type="tel" name="name" disabled="disabled"/>
     </div>
     <div class="form-group row">
         <label asp-for="Position" class="col-md-3 col-form-label"></label>
-        <input asp-for="Position" class="form-control" type="email" name="name" disabled="disabled" />
+        <input asp-for="Position" class="form-control" type="email" name="name" disabled="disabled"/>
     </div>
     <div class="form-group row">
         <label asp-for="Exerience" class="col-md-3 col-form-label"></label>
-        <input asp-for="Exerience" class="form-control" name="name" disabled="disabled" />
+        <input asp-for="Exerience" class="form-control" name="name" disabled="disabled"/>
     </div>
     <div class="form-group">
         <label asp-for="Rating"></label>

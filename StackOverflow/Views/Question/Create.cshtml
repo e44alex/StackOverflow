@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Ask your question";
-    Layout = @Layout;
+    Layout = Layout;
 }
 
 <h2>Ask a question</h2>
@@ -41,5 +41,5 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

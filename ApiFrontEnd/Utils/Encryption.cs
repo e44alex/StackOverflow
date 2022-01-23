@@ -1,36 +1,26 @@
 ﻿using System.Text;
-using StackOverflowWebApi.Migrations;
 
-namespace ApiFrontEnd.Utils
+namespace ApiFrontEnd.Utils;
+
+public static class Encryption
 {
-    public static class Encryption
+    private static readonly int _key = 5;
+
+    public static string Encrypt(this string incode)
     {
-        private static int _key =5;
+        var sb = new StringBuilder();
 
-        public static string Encrypt(this string incode)
-        {
-            StringBuilder sb = new StringBuilder();
+        foreach (var ch in incode) sb.Append((char)(ch + _key));
 
-            foreach (var ch in incode)
-            {
-                sb.Append((char)(ch + _key));
-            }
+        return sb.ToString();
+    }
 
-            return sb.ToString();
+    public static string Decrypt(this string incode)
+    {
+        var sb = new StringBuilder();
 
-        }
+        foreach (var ch in incode) sb.Append((char)(ch - _key));
 
-        public static string Decrypt(this string incode)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            foreach (var ch in incode)
-            {
-                sb.Append((char)(ch - _key));
-            }
-
-            return sb.ToString();
-
-        }
+        return sb.ToString();
     }
 }

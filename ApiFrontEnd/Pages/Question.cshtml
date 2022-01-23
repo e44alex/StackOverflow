@@ -2,7 +2,7 @@
 @model ApiFrontEnd.Pages.QuestionModel
 @{
     Layout = "_Layout";
-    string Username = "";
+    var Username = "";
 
     try
     {
@@ -48,7 +48,7 @@
 
 <div>
     <h4>
-        @if (@Model.Question.Answers != null && @Model.Question.Answers.Count > 0)
+        @if (Model.Question.Answers != null && Model.Question.Answers.Count > 0)
         {
             <p>@Model.Question.Answers.Count answers</p>
         }
@@ -77,9 +77,9 @@
                                 @if (Username != "")
                                 {
                                     <form method="post">
-                                        <input type="hidden" asp-for="@answer.Id" />
-                                        <input type="hidden" asp-for="Question.Id" />
-                                        <input type="submit" class="btn btn-secondary" value="Like" asp-page-handler="Like" />
+                                        <input type="hidden" asp-for="@answer.Id"/>
+                                        <input type="hidden" asp-for="Question.Id"/>
+                                        <input type="submit" class="btn btn-secondary" value="Like" asp-page-handler="Like"/>
                                     </form>
                                 }
                             </div>
@@ -94,9 +94,7 @@
             }
             catch (Exception)
             {
-
             }
-            
         }
     </div>
 </div>
@@ -109,9 +107,9 @@
     </div>
     <div>
         <form method="post">
-            <input asp-for="Question.Id" type="text" hidden="true" />
+            <input asp-for="Question.Id" type="text" hidden="true"/>
             <textarea name="Body" class="form-control mb-5" placeholder="Enter your answer"></textarea>
             <input type="submit" value="Send" class="btn btn-primary"/>
         </form>
     </div>
-}  
+}

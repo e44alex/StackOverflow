@@ -1,41 +1,27 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using StackOverflow.Models;
 
-namespace StackOverflow.Controllers
+namespace StackOverflow.Controllers;
+
+public class IndexViewModel
 {
-    public class IndexViewModel
+    public IEnumerable<Question> Questions { get; set; }
+    public PageViewModel VierwModel { get; set; }
+}
+
+public class PageViewModel
+{
+    public PageViewModel(int count, int pageNumber, int pageSize)
     {
-        public IEnumerable<Question> Questions { get; set; }
-        public PageViewModel VierwModel{ get; set; }
+        PageNumber = pageNumber;
+        TotalPages = (int)Math.Ceiling(count / (double)pageSize);
     }
 
-    public class PageViewModel
-    {
-        public int PageNumber { get; private set; }
-        public int TotalPages { get; private set; }
+    public int PageNumber { get; }
+    public int TotalPages { get; }
 
-        public PageViewModel(int count, int pageNumber, int pageSize)
-        {
-            PageNumber = pageNumber;
-            TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-        }
+    public bool HasPreviousPage => PageNumber > 1;
 
-        public bool HasPreviousPage
-        {
-            get
-            {
-                return (PageNumber > 1);
-            }
-        }
-
-        public bool HasNextPage
-        {
-            get
-            {
-                return (PageNumber < TotalPages);
-            }
-        }
-    }
+    public bool HasNextPage => PageNumber < TotalPages;
 }

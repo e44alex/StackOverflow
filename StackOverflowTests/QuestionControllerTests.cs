@@ -1,113 +1,105 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using NUnit.Framework;
+using StackOverflow.Common.Models;
+using StackOverflowWebApi.Controllers;
+using StackOverflowWebApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.EntityFrameworkCore;
-using Moq;
-using NUnit.Framework;
-using NUnit.Framework.Constraints;
-using StackOverflow.Controllers;
-using StackOverflowWebApi.Controllers;
-using StackOverflowWebApi.Models;
 
+namespace StackOverflowTests;
 
-namespace StackOverflowTests
+public class QuestionControllerTests
 {
-    public class QuestionControllerTests
+    private AppDbContext _context;
+
+    [SetUp]
+    public void Setup()
     {
-        private AppDbContext _context;
+        var builder = new DbContextOptionsBuilder<AppDbContext>();
+        builder.UseInMemoryDatabase("testDB1");
+        _context = new AppDbContext(builder.Options);
 
-        [SetUp]
-        public void Setup()
+        _context.Add(new User { Email = "e44alex@gmail.com", PasswordHash = AuthController.HashPassword("admin") });
+        _context.Add(new Question());
+        _context.Add(new Answer());
+        _context.Add(new AnswerLiker());
+        _context.SaveChangesAsync();
+    }
+
+    [Test]
+    public void Test_QuestionsController_GetQuestions_ReturnsListOfQuestions()
+    {
+        var controller = new QuestionsController(_context);
+
+        var result = controller.GetQuestions();
+
+        Assert.IsNotEmpty(result.Result.Value);
+    }
+
+    [Test]
+    public void Test_QuestionsController_GetQuestionById_ReturnsQuestion()
+    {
+        var controller = new QuestionsController(_context);
+
+        var result = controller.GetQuestion(_context.Questions.Select(x => x.Id).FirstOrDefault()).Result.Value;
+
+        Assert.IsInstanceOf<Question>(result);
+    }
+
+    [Test]
+    public void Test_QuestionsController_PostQuestion()
+    {
+        var controller = new QuestionsController(_context);
+
+        var result = controller.PostQuestion(new Question
         {
-            var builder = new DbContextOptionsBuilder<AppDbContext>();
-            builder.UseInMemoryDatabase("testDB1");
-            _context = new AppDbContext(builder.Options);
+            Id = Guid.NewGuid(),
+            Creator = _context.Users.FirstOrDefault(),
+            Body = "test",
+            Topic = "test"
+        }).Result;
 
-            _context.Add(new User() {Email = "e44alex@gmail.com", PasswordHash = AuthController.HashPassword("admin")});
-            _context.Add(new Question());
-            _context.Add(new Answer());
-            _context.Add(new AnswerLiker());
-            _context.SaveChangesAsync();
-        }
+        Assert.IsInstanceOf<ActionResult<Question>>(result);
+    }
 
-        [Test]
-        public void Test_QuestionsController_GetQuestions_ReturnsListOfQuestions()
+    [Test]
+    public void Test_QuestionsController_PutQuestion()
+    {
+        var controller = new QuestionsController(_context);
+
+        var questionForUpdate = _context.Questions.FirstOrDefault();
+        var oldQuestion = _context.Questions.FirstOrDefault();
+        questionForUpdate.Answers = new List<Answer>
         {
-
-            QuestionsController controller = new QuestionsController(_context);
-
-            var result = controller.GetQuestions();
-
-            Assert.IsNotEmpty(result.Result.Value);
-        }
-
-        [Test]
-        public void Test_QuestionsController_GetQuestionById_ReturnsQuestion()
-        {
-            QuestionsController controller = new QuestionsController(_context);
-
-            var result = controller.GetQuestion(_context.Questions.Select(x => x.Id).FirstOrDefault()).Result.Value;
-
-            Assert.IsInstanceOf<Question>(result);
-        }
-
-        [Test]
-        public void Test_QuestionsController_PostQuestion()
-        {
-            QuestionsController controller = new QuestionsController(_context);
-
-            var result = controller.PostQuestion(new Question()
+            new()
             {
-                Id = Guid.NewGuid(),
-                Creator = _context.Users.FirstOrDefault(),
+                Question = questionForUpdate,
                 Body = "test",
-                Topic = "test"
-            }).Result;
+                Creator = questionForUpdate.Creator
+            }
+        };
 
-            Assert.IsInstanceOf<ActionResult<Question>>(result);
-        }
-
-        [Test]
-        public void Test_QuestionsController_PutQuestion()
-        {
-            QuestionsController controller = new QuestionsController(_context);
-
-            var questionForUpdate = _context.Questions.FirstOrDefault();
-            var oldQuestion = _context.Questions.FirstOrDefault();
-            questionForUpdate.Answers = new List<Answer>()
-            {
-                new Answer()
-                {
-                    Question = questionForUpdate,
-                    Body = "test",
-                    Creator = questionForUpdate.Creator
-                }
-            };
-
-            controller.PutQuestion(questionForUpdate.Id, questionForUpdate);
+        controller.PutQuestion(questionForUpdate.Id, questionForUpdate);
 
 
-            var changedQuestion = _context.Questions.Find(questionForUpdate.Id);
+        var changedQuestion = _context.Questions.Find(questionForUpdate.Id);
 
 
-            //because of EF entity refs 
-            Assert.AreEqual(oldQuestion, changedQuestion);
-        }
+        //because of EF entity refs 
+        Assert.AreEqual(oldQuestion, changedQuestion);
+    }
 
-        [Test]
-        public void Test_QuestionsController_DeleteQuestion()
-        {
-            QuestionsController controller = new QuestionsController(_context);
+    [Test]
+    public void Test_QuestionsController_DeleteQuestion()
+    {
+        var controller = new QuestionsController(_context);
 
-            var questionForDelete = _context.Questions.FirstOrDefault();
+        var questionForDelete = _context.Questions.FirstOrDefault();
 
-            var result = controller.DeleteQuestion(questionForDelete.Id).Result.Value;
+        var result = controller.DeleteQuestion(questionForDelete.Id).Result.Value;
 
-            Assert.AreEqual(questionForDelete, result);
-        }
-
+        Assert.AreEqual(questionForDelete, result);
     }
 }
