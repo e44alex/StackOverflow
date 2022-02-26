@@ -3,10 +3,10 @@ import { Router } from '@angular/router';
 import { Guid } from 'guid-typescript';
 import { CookieService } from 'ngx-cookie-service';
 import { LoginPartialComponent } from '../login-partial/login-partial.component';
-import { AuthServiceService } from '../Shared/auth-service.service';
-import { DataServiceService } from '../Shared/data-service.service';
-import { Encryption } from '../Shared/Encryption';
-import { Question, User } from '../Shared/Model';
+import { AuthServiceService } from '../../Shared/auth-service.service';
+import { DataServiceService } from '../../Shared/data-service.service';
+import { Encryption } from '../../Shared/Encryption';
+import { Question, User } from '../../Shared/Model';
 
 @Component({
   selector: 'app-add-question',

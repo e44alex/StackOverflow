@@ -7,15 +7,15 @@ import { HttpClientModule } from '@angular/common/http'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
-import { QuestionComponent } from './Question/Question.component';
-import { UserComponent } from './User/User.component';
-import { HomeComponent } from './Home/Home.component';
+import { QuestionComponent } from './Components/Question/Question.component';
+import { UserComponent } from './Components/User/User.component';
+import { HomeComponent } from './Components/Home/Home.component';
 import { FormsModule } from '@angular/forms';
-import { LoginPartialComponent } from './login-partial/login-partial.component';
-import { RegisterFormComponent } from './register-form/register-form.component';
-import { LoginFormComponent } from './login-form/login-form.component';
+import { LoginPartialComponent } from './Components/login-partial/login-partial.component';
+import { RegisterFormComponent } from './Components/register-form/register-form.component';
+import { LoginFormComponent } from './Components/login-form/login-form.component';
 import { CookieService } from 'ngx-cookie-service';
-import { AddQuestionComponent } from './add-question/add-question.component';
+import { AddQuestionComponent } from './Components/add-question/add-question.component';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, QuestionComponent, UserComponent, LoginPartialComponent, RegisterFormComponent, LoginFormComponent, AddQuestionComponent],
