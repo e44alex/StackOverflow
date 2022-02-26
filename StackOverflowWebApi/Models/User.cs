@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using StackOverflow.Common.Models;
 
-namespace StackOverflow.Common.Models;
+namespace StackOverflowWebApi.Models;
 
 public class User
 {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int UserId { get; set; }
     public string Email { get; set; }
     public string Name { get; set; }
@@ -15,10 +17,5 @@ public class User
     public string? Position { get; set; }
     public float? Exerience { get; set; }
     public string? Bio { get; set; }
-    public string? PasswordHash { get; set; }
-
-    public List<Answer> Answers { get; set; }
-    public List<AnswerLiker> LikedAnswers { get; set; }
-    public List<Question> Questions { get; set; }
-
+    public string PasswordHash { get; set; }
 }

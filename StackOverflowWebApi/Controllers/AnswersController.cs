@@ -1,156 +1,107 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using StackOverflow.Common.Models;
-using StackOverflowWebApi.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using AutoMapper;
+using StackOverflow.Common.Services;
+using StackOverflow.DTO;
+using StackOverflowWebApi.Base;
+using Answer = StackOverflowWebApi.Models.Answer;
 
 namespace StackOverflowWebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AnswersController : ControllerBase
+public class AnswersController : StackOverflowControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly IApiClient _apiClient;
+    private readonly IMapper _mapper;
 
-    public AnswersController(AppDbContext context)
+    public AnswersController(IApiClient apiClient, IMapper mapper)
     {
-        _context = context;
-    }
-
-    // GET: api/Answers
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Answer>>> GetAnswers()
-    {
-        return await _context.Answers.ToListAsync();
+        _apiClient = apiClient;
+        _mapper = mapper;
     }
 
     // GET: api/Answers/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<Answer>> GetAnswer(Guid id)
+    public async Task<IActionResult> GetAnswer(Guid answerId)
     {
-        var answer = await _context.Answers
-            .Include(x => x.Users)
-            .FirstOrDefaultAsync(x => x.Id == id);
+        if (ModelState.IsValid)
+        {
+            var answer = await _apiClient.GetAnswerAsync(answerId);
 
-        if (answer == null) return NotFound();
+            return answer != null ? Ok(_mapper.Map<Answer>(answer)) : NotFound();
+        }
 
-        return answer;
+        return ValidationProblem(ModelState);
     }
 
-    // GET: api/Answers/5
-    [HttpGet("byQuestion/{id}")]
-    public async Task<List<Answer>> GetAnswersByQuestion(Guid id)
-    {
-        return await _context.Answers
-            .Include(a => a.Question)
-            .Where(a => a.Question.Id == id)
-            .ToListAsync();
-    }
+
 
     // PUT: api/Answers/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to, for
-    // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-
-    [Authorize]
+    //[Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> PutAnswer(Guid id, Answer answer)
     {
-        if (id != answer.Id) return BadRequest();
-
-        _context.Entry(answer).State = EntityState.Modified;
-
-        foreach (var user in answer.Users) user.Answer = answer;
-
-        try
+        if (ModelState.IsValid)
         {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!AnswerExists(id))
-                return NotFound();
-            throw;
+            var request = _mapper.Map<AnswerDTO.Request>(answer);
+            var result = await _apiClient.UpdateAnswerAsync(request);
+
+            return result switch {
+                true => Ok(answer),
+                _ => NotFound()
+            };
         }
 
-        return NoContent();
+        return ValidationProblem(ModelState);
     }
-
+    
     // POST: api/Answers
-    // To protect from overposting attacks, enable the specific properties you want to bind to, for
-    // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-
-    [Authorize]
+    //[Authorize]
     [HttpPost]
     public async Task<ActionResult<Answer>> PostAnswer(Answer answer)
     {
-        var question = await _context.Questions.FindAsync(answer.Question.Id);
-        question.LastActivity = DateTime.Now;
+        if (!ModelState.IsValid)
+        {
+            return ValidationProblem(ModelState);
+        }
 
-        answer.DateCreated = DateTime.Now;
-        answer.Question = question;
-        answer.Id = Guid.NewGuid();
-        answer.Creator = await _context.FindAsync<User>(answer.Creator.Id);
+        var request = _mapper.Map<AnswerDTO.Request>(answer);
+        var response = await _apiClient.AddAnswerAsync(request);
 
-        _context.Add(answer);
-        await _context.SaveChangesAsync();
-
-        return CreatedAtAction("GetAnswer", new { id = answer.Id }, answer);
+        return response switch {
+            true => Ok(),
+            _ => Conflict()
+        };
     }
 
     // DELETE: api/Answers/5
     [HttpDelete("{id}")]
-    public async Task<ActionResult<Answer>> DeleteAnswer(Guid id)
+    public async Task<ActionResult<Answer>> DeleteAnswer(Guid answerId)
     {
-        var answer = await _context.Answers.FindAsync(id);
-        if (answer == null) return NotFound();
+        var result = await _apiClient.DeleteAnswer(answerId);
 
-        _context.Answers.Remove(answer);
-        await _context.SaveChangesAsync();
-
-        return answer;
-    }
-
-    [Authorize]
-    [HttpGet("/like")]
-    public async Task<IActionResult> LikeAnswer(Guid answerId, string username)
-    {
-        var answer = await _context.Answers
-            .Include(x => x.Question)
-            .FirstOrDefaultAsync(x => x.Id == answerId);
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == username);
-
-        if (answer.Creator.Id == user.Id) answer.Question.Opened = false;
-
-        _context.Add(new AnswerLiker
+        return result switch
         {
-            Id = Guid.NewGuid(),
-            Answer = answer,
-            User = user
-        });
-
-        user.Rating = await SetUserRatingAsync(user.Login);
-
-        await _context.SaveChangesAsync();
-
-        return NoContent();
+            true => Ok(),
+            _ => NotFound()
+        };
     }
 
-    private async Task<int?> SetUserRatingAsync(string userName)
+    //[Authorize]
+    [HttpGet("/like")]
+    public async Task<IActionResult> LikeAnswer(Guid answerId)
     {
-        var totalQuestion = _context.Questions.Count(x => x.Creator.Email == userName);
-        var totalAnswers = _context.Answers.Count(x => x.Creator.Email == userName);
-        var likedAnswers = _context.Answers.Count(x => x.Creator.Email == userName && x.Users.Count > 0);
+        var principal = User.FindFirstValue(ClaimTypes.Name);
 
-        var result = (float)(totalQuestion + likedAnswers) / (totalAnswers + totalQuestion);
-        return (int?)Math.Round(result * 100);
-    }
+        var result = await _apiClient.LikeAnswerAsync(answerId, principal);
 
-    private bool AnswerExists(Guid id)
-    {
-        return _context.Answers.Any(e => e.Id == id);
+        return result switch
+        {
+            true => Ok(),
+            _ => NotFound()
+        };
     }
 }

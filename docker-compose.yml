@@ -1,0 +1,30 @@
+version: '3.4'
+
+services:
+  stackoverflowwebapi:
+    image: ${DOCKER_REGISTRY-}stackoverflowwebapi
+    build:
+      context: .
+      dockerfile: StackOverflowWebApi/Dockerfile
+    depends_on:
+      - rabbitmq
+  echo-service:
+    image: ${DOCKER_REGISTRY-}echoservice
+    build: 
+      context: .
+      dockerfile: EchoService/Dockerfile
+    depends_on:
+      - rabbitmq
+  rabbitmq:
+    #image: rabbitmq:3.9.13-management-alpine
+    #container_name: 'rabbitmq'
+    #ports:
+    #    - 5672:5672
+    #    - 15672:15672
+    #volumes:
+    #    - ./Infrastructure/RabbitMQ/:/etc/rabbitmq/
+    image: masstransit/rabbitmq:latest
+    ports:
+     - "5672:5672"
+     - "15672:15672"
+     - "15692:15692"

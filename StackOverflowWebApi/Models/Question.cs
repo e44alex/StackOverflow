@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
 
-namespace StackOverflow.Common.Models;
+namespace StackOverflowWebApi.Models;
 
 public class Question
 {
@@ -10,6 +10,6 @@ public class Question
     public bool Opened { get; set; }
     public DateTime DateCreated { get; set; }
     public DateTime LastActivity { get; set; }
-    public User Creator { get; set; }
-    public List<Answer> Answers { get; set; }
+    public string Creator { get; set; }
+
 }

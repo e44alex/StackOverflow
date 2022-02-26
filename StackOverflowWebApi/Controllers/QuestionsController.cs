@@ -1,115 +1,101 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using StackOverflow.Common.Models;
-using StackOverflowWebApi.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using StackOverflow.Common.Services;
+using StackOverflow.DTO;
+using Answer = StackOverflowWebApi.Models.Answer;
+using Question = StackOverflowWebApi.Models.Question;
 
 namespace StackOverflowWebApi.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/questions")]
 [ApiController]
 public class QuestionsController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly IApiClient _apiClient;
+    private readonly IMapper _mapper;
 
-    public QuestionsController(AppDbContext context)
+    public QuestionsController(IApiClient apiClient, IMapper mapper)
     {
-        _context = context;
+        _apiClient = apiClient;
+        _mapper = mapper;
     }
 
     // GET: api/Questions
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Question>>> GetQuestions()
     {
-        return await _context.Questions
-            .Include(x => x.Creator)
-            .Include(x => x.Answers)
-            .ThenInclude(x => x.Users)
-            .ToListAsync();
+        var result = await _apiClient.GetQuestionsAsync();
+
+        return Ok(_mapper.Map<List<Question>>(result));
     }
 
     // GET: api/Questions/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<Question>> GetQuestion(Guid id)
+    public async Task<ActionResult> GetQuestion(Guid id)
     {
-        var question = await _context.Questions
-            .Include(x => x.Creator)
-            .Include(x => x.Answers)
-            .ThenInclude(x => x.Users)
-            .FirstOrDefaultAsync(x => x.Id == id);
+        var result = await _apiClient.GetQuestionsAsync();
 
-        if (question == null) return NotFound();
-
-        return question;
+        return result != null ? Ok(_mapper.Map<Question>(result)) : NotFound();
     }
 
     // PUT: api/Questions/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to, for
-    // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-
-    [Authorize]
+    //[Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> PutQuestion(Guid id, Question question)
     {
-        if (id != question.Id) return BadRequest();
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        _context.Entry(question).State = EntityState.Modified;
+        var request = _mapper.Map<QuestionDTO.Request>(question);
+        var result = await _apiClient.UpdateQuestionAsync(request);
 
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!QuestionExists(id))
-                return NotFound();
-            throw;
-        }
-
-        return NoContent();
+        return result switch {
+            true => Ok(),
+            _ => NotFound()
+        };
     }
 
     // POST: api/Questions
-    // To protect from overposting attacks, enable the specific properties you want to bind to, for
-    // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-
-    [Authorize]
+    //[Authorize]
     [HttpPost]
     public async Task<ActionResult<Question>> PostQuestion(Question question)
     {
-        var user = await _context.Users.FindAsync(question.Creator.Id);
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        question.Creator = user;
-        question.LastActivity = DateTime.Now;
-        question.Opened = true;
-        question.DateCreated = DateTime.Now;
-        await _context.AddAsync(question);
-        await _context.SaveChangesAsync();
+        var request = _mapper.Map<QuestionDTO.Request>(question);
+        var result = await _apiClient.AddQuestionAsync(request);
 
-        return CreatedAtAction("GetQuestion", new { id = question.Id }, question);
+        return result switch
+        {
+            true => Ok(),
+            _ => NotFound()
+        };
     }
 
     // DELETE: api/Questions/5
 
-    [Authorize]
+    //[Authorize]
     [HttpDelete("{id}")]
     public async Task<ActionResult<Question>> DeleteQuestion(Guid id)
     {
-        var question = await _context.Questions.FindAsync(id);
-        if (question == null) return NotFound();
+        var result = await _apiClient.DeleteQuestion(id);
 
-        _context.Questions.Remove(question);
-        await _context.SaveChangesAsync();
-
-        return question;
+        return result switch
+        {
+            true => Ok(),
+            _ => NotFound()
+        };
     }
 
-    private bool QuestionExists(Guid id)
+    // GET: api/Answers/5
+    [HttpGet("{id}/answers")]
+    public async Task<IActionResult> GetQuestionAnswers(Guid id)
     {
-        return _context.Questions.Any(e => e.Id == id);
+        var result = await _apiClient.GetAnswersByQuestionAsync(id);
+
+        return Ok(_mapper.Map<List<Answer>>(result));
     }
 }

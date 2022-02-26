@@ -1,124 +1,62 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using StackOverflow.Common.Models;
-using StackOverflowWebApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using StackOverflow.Common.Services;
+using StackOverflow.DTO;
+using User = StackOverflowWebApi.Models.User;
 
 namespace StackOverflowWebApi.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/users")]
 [ApiController]
 public class UsersController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly IApiClient _apiClient;
+    private readonly IMapper _mapper;
 
-    public UsersController(AppDbContext context)
+    public UsersController(IApiClient apiClient, IMapper mapper)
     {
-        _context = context;
+        _apiClient = apiClient;
+        _mapper = mapper;
     }
 
-    // GET: api/Users
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<User>>> GetUsers()
-    {
-        return await _context.Users.ToListAsync();
-    }
 
     // GET: api/Users/5
-    [HttpGet("{id}")]
-    public async Task<ActionResult<User>> GetUser(Guid id)
+    [HttpGet("{userName}")]
+    public async Task<ActionResult> GetUser(string userName)
     {
-        var user = await _context.Users.FindAsync(id);
+        var result = await _apiClient.GetUserDataAsync(userName);
 
-        if (user == null) return NotFound();
-
-        return user;
+        return result != null ? Ok(_mapper.Map<User>(result)) : NotFound();
     }
-
-    // GET: api/Users/byName/username
-    [HttpGet("byName/{username}")]
-    public async Task<ActionResult<User>> GetUser(string username)
-    {
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == username);
-
-        if (user == null) return NotFound();
-
-        return user;
-    }
-
-    [HttpGet("getId/{username}")]
-    public async Task<ActionResult<string>> GetId(string username)
-    {
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == username);
-
-        return user.Id;
-    }
-
 
     // PUT: api/Users/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to, for
-    // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-
-    [Authorize]
+    //[Authorize]
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutUser(string id, User user)
+    public async Task<IActionResult> PutUser(int id, User user)
     {
-        if (id.ToString() != user.Id) return BadRequest();
+        var request = _mapper.Map<UserDTO.Request>(user);
+        var result = await _apiClient.UpdateUserAsync(request);
 
-        //password changed
-        var prevPassword = _context.Users.FirstOrDefault(u => u.Id == id)?.PasswordHash;
-        if (user.PasswordHash != prevPassword) user.PasswordHash = AuthController.HashPassword(user.PasswordHash);
-
-        //_context.Entry(user).State = EntityState.Modified;
-
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!UserExists(id))
-                return NotFound();
-            throw;
-        }
-
-        return NoContent();
+        return result switch {
+            true => Ok(),
+            _ => NotFound()
+        };
     }
 
     // POST: api/Users
-    // To protect from overposting attacks, enable the specific properties you want to bind to, for
-    // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
     [HttpPost]
     public async Task<ActionResult<User>> PostUser(User user)
     {
-        if (_context.Users.Any(u => u.Email == user.Email)) return Forbid();
+        var request = _mapper.Map<UserDTO.Request>(user);
+        var result = await _apiClient.AddUserAsync(request);
 
-        user.PasswordHash = AuthController.HashPassword(user.PasswordHash);
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
-
-        return CreatedAtAction("GetUser", new { id = user.Id }, user);
+        return result switch
+        {
+            true => Ok(),
+            _ => NotFound()
+        };
     }
 
-    // DELETE: api/Users/5
-    [HttpDelete("{id}")]
-    public async Task<ActionResult<User>> DeleteUser(string id)
-    {
-        var user = await _context.Users.FindAsync(id);
-        if (user == null) return NotFound();
-
-        _context.Users.Remove(user);
-        await _context.SaveChangesAsync();
-
-        return user;
-    }
-
-    private bool UserExists(string id)
-    {
-        return _context.Users.Any(e => e.Id == id);
-    }
 }

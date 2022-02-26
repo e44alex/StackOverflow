@@ -7,23 +7,26 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StackOverflowWebApi.Models;
 
+#nullable disable
+
 namespace StackOverflowWebApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201027130120_key")]
-    partial class key
+    [Migration("20220222164352_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.9")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "6.0.2")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            modelBuilder.Entity("StackOverflowWebApi.Models.Answer", b =>
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("StackOverflow.Common.Models.Answer", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("AnswerId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -31,46 +34,46 @@ namespace StackOverflowWebApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CreatorUserId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("QuestionId")
+                    b.Property<Guid>("QuestionId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("Id");
+                    b.HasKey("AnswerId");
 
-                    b.HasIndex("CreatorId");
-
-                    b.HasIndex("Id")
+                    b.HasIndex("AnswerId")
                         .IsUnique();
+
+                    b.HasIndex("CreatorUserId");
 
                     b.HasIndex("QuestionId");
 
                     b.ToTable("Answers");
                 });
 
-            modelBuilder.Entity("StackOverflowWebApi.Models.AnswerLiker", b =>
+            modelBuilder.Entity("StackOverflow.Common.Models.AnswerLiker", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("AnswerId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("UserId", "AnswerId");
+                    b.HasKey("AnswerId", "UserId");
 
-                    b.HasIndex("AnswerId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("AnswerLiker");
                 });
 
-            modelBuilder.Entity("StackOverflowWebApi.Models.Question", b =>
+            modelBuilder.Entity("StackOverflow.Common.Models.Question", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -80,8 +83,8 @@ namespace StackOverflowWebApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CreatorUserId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
@@ -98,7 +101,7 @@ namespace StackOverflowWebApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatorId");
+                    b.HasIndex("CreatorUserId");
 
                     b.HasIndex("Id")
                         .IsUnique();
@@ -106,11 +109,13 @@ namespace StackOverflowWebApi.Migrations
                     b.ToTable("Questions");
                 });
 
-            modelBuilder.Entity("StackOverflowWebApi.Models.User", b =>
+            modelBuilder.Entity("StackOverflow.Common.Models.User", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"), 1L, 1);
 
                     b.Property<string>("Bio")
                         .HasColumnType("nvarchar(max)");
@@ -119,7 +124,8 @@ namespace StackOverflowWebApi.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<float?>("Exerience")
                         .HasColumnType("real");
@@ -128,12 +134,11 @@ namespace StackOverflowWebApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Position")
@@ -143,44 +148,83 @@ namespace StackOverflowWebApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Surname")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("UserId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("StackOverflowWebApi.Models.Answer", b =>
+            modelBuilder.Entity("StackOverflow.Common.Models.Answer", b =>
                 {
-                    b.HasOne("StackOverflowWebApi.Models.User", "Creator")
+                    b.HasOne("StackOverflow.Common.Models.User", "Creator")
                         .WithMany("Answers")
-                        .HasForeignKey("CreatorId");
+                        .HasForeignKey("CreatorUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
-                    b.HasOne("StackOverflowWebApi.Models.Question", "Question")
+                    b.HasOne("StackOverflow.Common.Models.Question", "Question")
                         .WithMany("Answers")
-                        .HasForeignKey("QuestionId");
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Creator");
+
+                    b.Navigation("Question");
                 });
 
-            modelBuilder.Entity("StackOverflowWebApi.Models.AnswerLiker", b =>
+            modelBuilder.Entity("StackOverflow.Common.Models.AnswerLiker", b =>
                 {
-                    b.HasOne("StackOverflowWebApi.Models.Answer", "Answer")
+                    b.HasOne("StackOverflow.Common.Models.Answer", "Answer")
                         .WithMany("Users")
                         .HasForeignKey("AnswerId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("StackOverflowWebApi.Models.User", "User")
+                    b.HasOne("StackOverflow.Common.Models.User", "User")
                         .WithMany("LikedAnswers")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Answer");
+
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("StackOverflowWebApi.Models.Question", b =>
+            modelBuilder.Entity("StackOverflow.Common.Models.Question", b =>
                 {
-                    b.HasOne("StackOverflowWebApi.Models.User", "Creator")
+                    b.HasOne("StackOverflow.Common.Models.User", "Creator")
                         .WithMany("Questions")
-                        .HasForeignKey("CreatorId");
+                        .HasForeignKey("CreatorUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Creator");
+                });
+
+            modelBuilder.Entity("StackOverflow.Common.Models.Answer", b =>
+                {
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("StackOverflow.Common.Models.Question", b =>
+                {
+                    b.Navigation("Answers");
+                });
+
+            modelBuilder.Entity("StackOverflow.Common.Models.User", b =>
+                {
+                    b.Navigation("Answers");
+
+                    b.Navigation("LikedAnswers");
+
+                    b.Navigation("Questions");
                 });
 #pragma warning restore 612, 618
         }

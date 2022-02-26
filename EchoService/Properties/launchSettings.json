@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "EchoService": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

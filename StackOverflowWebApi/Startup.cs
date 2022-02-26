@@ -1,8 +1,9 @@
+using System;
+using System.Reflection;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,16 +11,22 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using StackOverflowWebApi.Authentication;
-using StackOverflowWebApi.Models;
 using StackOverflowWebApi.Services;
 using Swashbuckle.AspNetCore.Filters;
-using System;
 using System.Threading.Tasks;
+using MassTransit;
+using StackOverflow.Common.Services;
 
 namespace StackOverflowWebApi;
 
 public class Startup
 {
+    static bool? _isRunningInContainer;
+
+    static bool IsRunningInContainer =>
+        _isRunningInContainer ??= bool.TryParse(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER"), out var inContainer) && inContainer;
+
+
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
@@ -27,7 +34,6 @@ public class Startup
 
     public IConfiguration Configuration { get; }
 
-    // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddControllers()
@@ -61,7 +67,6 @@ public class Startup
             })
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
                 Configuration.Bind("CookieSettings", options));
-        ;
 
         services.AddSwaggerGen(options =>
         {
@@ -80,18 +85,44 @@ public class Startup
             options.OperationFilter<SecurityRequirementsOperationFilter>();
         });
 
-        services.AddDbContext<AppDbContext>(options =>
+        services.AddSingleton<IApiClient, ApiClient>();
+        services.AddSingleton<IEchoClient, EchoClient>();
+
+        var messagingSection = Configuration.GetSection("Messaging");
+        var rabbitMqHost = messagingSection["RabbitMqHost"];
+        var username = messagingSection["username"];
+        var password = messagingSection["password"];
+
+        // MESSAGE BROKER
+        services.AddMassTransit(configurator =>
         {
-            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            configurator.AddDelayedMessageScheduler();
+
+            configurator.SetKebabCaseEndpointNameFormatter();
+
+            configurator.SetInMemorySagaRepositoryProvider();
+
+            var assembly = Assembly.GetEntryAssembly();
+
+            configurator.AddConsumers(assembly);
+            configurator.AddSagaStateMachines(assembly);
+            configurator.AddSagas(assembly);
+            configurator.AddActivities(assembly);
+
+            configurator.UsingRabbitMq((busRegistrationContext, busFactoryConfigurator) =>
+            {
+                if (IsRunningInContainer)
+                    busFactoryConfigurator.Host("rabbitmq");
+
+                busFactoryConfigurator.UseDelayedMessageScheduler();
+
+                busFactoryConfigurator.ConfigureEndpoints(busRegistrationContext);
+            });
         });
 
-        services.AddHttpClient<IApiClient, ApiClient>(client =>
-        {
-            client.BaseAddress = new Uri(Configuration["serviceUrl"]);
-        });
+        services.AddMassTransitHostedService(true);
     }
 
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
