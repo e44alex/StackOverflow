@@ -5,14 +5,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using StackOverflow.Common.Services;
 using StackOverflow.DTO;
-using StackOverflowWebApi.Base;
 using Answer = StackOverflowWebApi.Models.Answer;
 
 namespace StackOverflowWebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AnswersController : StackOverflowControllerBase
+public class AnswersController : ControllerBase
 {
     private readonly IApiClient _apiClient;
     private readonly IMapper _mapper;
@@ -46,7 +45,7 @@ public class AnswersController : StackOverflowControllerBase
     {
         if (ModelState.IsValid)
         {
-            var request = _mapper.Map<AnswerDTO.Request>(answer);
+            var request = _mapper.Map<PutAnswerDTO.Request>(answer);
             var result = await _apiClient.UpdateAnswerAsync(request);
 
             return result switch {
@@ -68,7 +67,7 @@ public class AnswersController : StackOverflowControllerBase
             return ValidationProblem(ModelState);
         }
 
-        var request = _mapper.Map<AnswerDTO.Request>(answer);
+        var request = _mapper.Map<PostAnswerDTO.Request>(answer);
         var response = await _apiClient.AddAnswerAsync(request);
 
         return response switch {

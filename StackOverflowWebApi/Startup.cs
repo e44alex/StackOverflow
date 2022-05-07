@@ -14,8 +14,10 @@ using StackOverflowWebApi.Authentication;
 using StackOverflowWebApi.Services;
 using Swashbuckle.AspNetCore.Filters;
 using System.Threading.Tasks;
+using AutoMapper;
 using MassTransit;
 using StackOverflow.Common.Services;
+using StackOverflowWebApi.AutoMapperProfiles;
 
 namespace StackOverflowWebApi;
 
@@ -121,6 +123,12 @@ public class Startup
         });
 
         services.AddMassTransitHostedService(true);
+
+        var config = new MapperConfiguration(c =>
+        {
+            c.AddProfile<MapperProfile>();
+        });
+        services.AddSingleton<IMapper>(s => config.CreateMapper());
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

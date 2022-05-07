@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using StackOverflow.Common.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -49,7 +48,7 @@ public class QuestionsController : ControllerBase
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var request = _mapper.Map<QuestionDTO.Request>(question);
+        var request = _mapper.Map<PutQuestionDTO.Request>(question);
         var result = await _apiClient.UpdateQuestionAsync(request);
 
         return result switch {
@@ -65,7 +64,7 @@ public class QuestionsController : ControllerBase
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var request = _mapper.Map<QuestionDTO.Request>(question);
+        var request = _mapper.Map<PostQuestionDTO.Request>(question);
         var result = await _apiClient.AddQuestionAsync(request);
 
         return result switch

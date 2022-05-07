@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using MassTransit;
 using StackOverflow.Common.Services;
 using StackOverflow.DTO;
 
@@ -8,6 +10,9 @@ namespace StackOverflowWebApi.Services;
 
 public class ApiClient : IApiClient
 {
+    private readonly IBus _bus;
+    private readonly IClientFactory _clientFactory;
+
     #region QueueChannels
 
     protected const string AuthenticationChannel = "Authentication";
@@ -17,46 +22,68 @@ public class ApiClient : IApiClient
 
     #endregion
 
-    public ApiClient()
+    public ApiClient(IBus bus)
     {
+        _bus = bus;
+        _clientFactory = _bus.CreateClientFactory();
     }
 
-    public Task<List<QuestionDTO.Response>> GetQuestionsAsync()
+    public async Task<List<QuestionDTO.Response>> GetQuestionsAsync()
     {
-        throw new NotImplementedException();
+        var responseClient = _clientFactory.CreateRequestClient<QuestionDTO.Request>();
+        var response = await responseClient.GetResponse<List<QuestionDTO.Response>>(new QuestionDTO.Request(Guid.Empty));
+
+        return response.Message;
     }
 
-    public Task<QuestionDTO.Response> GetQuestionAsync(Guid questionId)
+    public async Task<QuestionDTO.Response?> GetQuestionAsync(Guid questionId)
     {
-        throw new NotImplementedException();
+        var responseClient = _clientFactory.CreateRequestClient<QuestionDTO.Request>();
+        var response = await responseClient.GetResponse<List<QuestionDTO.Response>>(new QuestionDTO.Request(questionId));
+
+        return response.Message.FirstOrDefault() ?? null;
     }
 
-    public Task<AnswerDTO.Response> GetAnswerAsync(Guid answerId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<List<AnswerDTO.Response>> GetAnswersByQuestionAsync(Guid questionId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> AddQuestionAsync(QuestionDTO.Request question)
+    public Task<GetAnswerDTO.Response> GetAnswerAsync(Guid answerId)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> AddQuestionAsync()
+    public async Task<List<GetAnswerDTO.Response>> GetAnswersByQuestionAsync(Guid questionId)
+    {
+        var responseClient = _clientFactory.CreateRequestClient<GetAnswerDTO.Request>();
+        var response = await responseClient.GetResponse<List<GetAnswerDTO.Response>>(new GetAnswerDTO.Request(questionId));
+
+        return response.Message;
+    }
+
+    public async Task<bool> AddQuestionAsync(PostQuestionDTO.Request question)
+    {
+        var responseClient = _clientFactory.CreateRequestClient<PostQuestionDTO.Request>();
+        var response = await responseClient.GetResponse<PostQuestionDTO.Response>(question);
+
+        return response.Message.Success;
+    }
+
+    public async Task<bool> AddAnswerAsync(PostAnswerDTO.Request answer)
+    {
+        var responseClient = _clientFactory.CreateRequestClient<PostAnswerDTO.Request>();
+        var response = await responseClient.GetResponse<PostAnswerDTO.Response>(answer);
+
+        return response.Message.Success;
+    }
+
+    public Task<bool> UpdateAnswerAsync(PutAnswerDTO.Request answer)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> AddAnswerAsync(AnswerDTO.Request answer)
+    public Task<bool> UpdateQuestionAsync(PutQuestionDTO.Request question)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> UpdateAnswerAsync(AnswerDTO.Request answer)
+    public Task<bool> UpdateAnswerAsync(PostAnswerDTO.Request answer)
     {
         throw new NotImplementedException();
     }
@@ -66,7 +93,7 @@ public class ApiClient : IApiClient
         throw new NotImplementedException();
     }
 
-    public Task<UserDTO.Response> GetUserDataAsync(string username)
+    public Task<PostUserDTO.Response> GetUserDataAsync(string username)
     {
         throw new NotImplementedException();
     }
@@ -81,17 +108,17 @@ public class ApiClient : IApiClient
         throw new NotImplementedException();
     }
 
-    public Task<bool> UnAuthenticate(string inputUsername)
+    public Task<bool> UnAuthenticate(string username)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> UpdateUserAsync(UserDTO.Request user)
+    public Task<bool> UpdateUserAsync(PostUserDTO.Request user)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> AddUserAsync(UserDTO.Request user)
+    public Task<bool> AddUserAsync(PostUserDTO.Request user)
     {
         throw new NotImplementedException();
     }
@@ -294,9 +321,9 @@ public class ApiClient : IApiClient
     //    }
     //}
 
-    //public async Task<bool> UnAuthenticate(string inputUsername)
+    //public async Task<bool> UnAuthenticate(string username)
     //{
-    //    var response = await _httpClient.GetAsync($"/logOut?username={inputUsername}");
+    //    var response = await _httpClient.GetAsync($"/logOut?username={username}");
 
     //    response.EnsureSuccessStatusCode();
 

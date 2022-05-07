@@ -1,8 +1,6 @@
 ﻿using System.Threading.Tasks;
-using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using StackOverflow.Common.Services;
-using StackOverflowWebApi.Services;
 
 namespace StackOverflowWebApi.Controllers;
 

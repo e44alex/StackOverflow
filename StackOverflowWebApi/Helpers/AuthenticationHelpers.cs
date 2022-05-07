@@ -54,15 +54,15 @@ public static class AuthenticationHelpers
         return Convert.ToBase64String(dst);
     }
 
-    public async static Task<bool> VerifyHashedPasswordAsync(string? hashedPassword, string password)
+    private static Task<bool> VerifyHashedPasswordAsync(string? hashedPassword, string password)
     {
         byte[] buffer4;
-        if (string.IsNullOrEmpty(hashedPassword)) return false;
+        if (string.IsNullOrEmpty(hashedPassword)) return Task.FromResult(false);
 
         if (string.IsNullOrEmpty(password)) throw new ArgumentNullException("password is empty");
 
         var src = Convert.FromBase64String(hashedPassword);
-        if (src.Length != 0x31 || src[0] != 0) return false;
+        if (src.Length != 0x31 || src[0] != 0) return Task.FromResult(false);
 
         var dst = new byte[0x10];
         Buffer.BlockCopy(src, 1, dst, 0, 0x10);
@@ -73,13 +73,13 @@ public static class AuthenticationHelpers
             buffer4 = bytes.GetBytes(0x20);
         }
 
-        return buffer3.Equal(buffer4);
+        return Task.FromResult(buffer3.Equal(buffer4));
     }
 
-    public static Task<string?> CreateToken(ClaimsIdentity identity)
+    public static Task<string> CreateToken(ClaimsIdentity identity)
     {
         var now = DateTime.UtcNow;
-        // создаем JWT-токен
+        
         var jwt = new JwtSecurityToken(
             AuthOptions.ISSUER,
             AuthOptions.AUDIENCE,

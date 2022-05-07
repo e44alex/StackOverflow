@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace StackOverflow.Common.Models;
+﻿namespace StackOverflow.Common.Models;
 
 public class Answer
 {
@@ -9,5 +7,5 @@ public class Answer
     public Question Question { get; set; }
     public DateTime DateCreated { get; set; }
     public List<AnswerLiker> Users { get; set; }
-    public virtual User Creator { get; set; }
+    public User Creator { get; set; }
 }

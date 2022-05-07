@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace StackOverflow.Common.Models;
+﻿namespace StackOverflow.Common.Models;
 
 public class Question
 {

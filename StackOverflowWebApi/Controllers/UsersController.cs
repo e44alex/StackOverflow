@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using StackOverflow.Common.Models;
 using System.Threading.Tasks;
 using AutoMapper;
 using StackOverflow.Common.Services;
@@ -36,7 +35,7 @@ public class UsersController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> PutUser(int id, User user)
     {
-        var request = _mapper.Map<UserDTO.Request>(user);
+        var request = _mapper.Map<PostUserDTO.Request>(user);
         var result = await _apiClient.UpdateUserAsync(request);
 
         return result switch {
@@ -49,7 +48,7 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<User>> PostUser(User user)
     {
-        var request = _mapper.Map<UserDTO.Request>(user);
+        var request = _mapper.Map<PostUserDTO.Request>(user);
         var result = await _apiClient.AddUserAsync(request);
 
         return result switch
