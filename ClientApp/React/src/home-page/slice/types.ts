@@ -1,5 +1,4 @@
-import { Question } from "../../Model/Question";
-
+import { Question } from 'src/Model/Question';
 
 
 export class QuestionState {

@@ -1,5 +1,5 @@
-import { toastr } from "react-redux-toastr"
-import { actions } from "./slice"
+import { toastr } from 'react-redux-toastr';
+import { actions } from 'src/Shared/redux/app/slice';
 
 function onError(errorType: string) {
     toastr.error(errorType, '');

@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppState, ErrorPayload,  } from "./types";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AppState, ErrorPayload } from 'src/Shared/redux/app/types';
 
 export const initialState: AppState = {
     authenticated: false,

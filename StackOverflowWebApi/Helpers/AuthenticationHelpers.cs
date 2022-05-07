@@ -15,32 +15,30 @@ public static class AuthenticationHelpers
 {
     public async static Task<ClaimsIdentity?> GetIdentity(string username, string password)
     {
-        using (AppDbContext _context = new AppDbContext()) // TODO: this should be call for factory
-        {
-            var user = _context.Users.FirstOrDefault(x => x.Email == username);
+        using var _context = new AppDbContext();
+        var user = _context.Users.FirstOrDefault(x => x.Email == username);
             
-            if (user == null) return null;
-            if (!await VerifyHashedPasswordAsync(user.PasswordHash, password)) return null;
+        if (user == null) return null;
+        if (!await VerifyHashedPasswordAsync(user.PasswordHash, password)) return null;
 
-            var claims = new List<Claim>
-            {
-                new(ClaimsIdentity.DefaultNameClaimType, user.Email),
-                new(ClaimsIdentity.DefaultRoleClaimType, "user")
-            };
+        var claims = new List<Claim>
+        {
+            new(ClaimsIdentity.DefaultNameClaimType, user.Email),
+            new(ClaimsIdentity.DefaultRoleClaimType, "user")
+        };
 
-            var claimsIdentity =
-                new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
-                    ClaimsIdentity.DefaultRoleClaimType);
+        var claimsIdentity =
+            new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
+                ClaimsIdentity.DefaultRoleClaimType);
 
-            return claimsIdentity;
-        }
+        return claimsIdentity;
     }
 
     public async static Task<string> HashPasswordAsync(string password)
     {
         byte[] salt;
         byte[] buffer2;
-        if (string.IsNullOrEmpty(password)) throw new ArgumentNullException("password is empty");
+        if (string.IsNullOrEmpty(password)) throw new ArgumentNullException("HashPasswordAsync: password is empty");
 
         using (var bytes = new Rfc2898DeriveBytes(password, 0x10, 0x3e8))
         {
@@ -59,7 +57,7 @@ public static class AuthenticationHelpers
         byte[] buffer4;
         if (string.IsNullOrEmpty(hashedPassword)) return Task.FromResult(false);
 
-        if (string.IsNullOrEmpty(password)) throw new ArgumentNullException("password is empty");
+        if (string.IsNullOrEmpty(password)) throw new ArgumentNullException("VerifyHashedPasswordAsync: password is empty");
 
         var src = Convert.FromBase64String(hashedPassword);
         if (src.Length != 0x31 || src[0] != 0) return Task.FromResult(false);

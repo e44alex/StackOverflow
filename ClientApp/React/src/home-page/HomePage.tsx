@@ -1,7 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Question } from "../../Model/Question";
-import { User } from "../../Model/User";
+import React from 'react';
+import { Question } from '../Shared/types';
 
 type MyProps = {};
 
@@ -16,14 +14,27 @@ export default class HomePage extends React.Component<MyProps, MyState> {
   }
 
   getTestQuestion(): Question[] {
-    let testQuestion: Question = new Question();
-    testQuestion.Topic = "Test Topic";
-    testQuestion.DateCreated = new Date();
-    testQuestion.Body = "Test question body";
-    testQuestion.Creator = new User();
-    testQuestion.Creator.Name = "TestUserName";
-    testQuestion.Opened = true;
-    testQuestion.Answers = [];
+    let testQuestion: Question = {
+      Answers: [], Body: '',
+      Creator: {
+        DateRegistered: new Date(),
+        Email: '',
+        Experience: 0,
+        Id: '',
+        Login: '',
+        Name: '',
+        PhoneNumber: '',
+        Position: '',
+        Rating: 0,
+        Surname: '',
+
+      },
+      DateCreated: new Date(),
+      Id: '',
+      LastActivity: new Date(),
+      Opened: false,
+      Topic: 'test topic',
+    };
 
     return [
       testQuestion,
@@ -75,7 +86,7 @@ export default class HomePage extends React.Component<MyProps, MyState> {
                     <p className="card-text">{question.Body}</p>
                   </div>
                   <div className="card-footer">
-                    Created by <a href="/">{question.Creator.Name}</a> on{" "}
+                    Created by <a href="/src/">{question.Creator.Name}</a> on{' '}
                     {question.DateCreated.toDateString()}
                   </div>
                 </div>
