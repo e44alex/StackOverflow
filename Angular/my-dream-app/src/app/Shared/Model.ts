@@ -1,41 +1,38 @@
-import { DecimalPipe } from '@angular/common';
-import { Guid } from 'guid-typescript';
-
 export class User {
-    id: string;
-    login: string;
-    name:string;
-    surname:string;
-    phoneNumber: string
-    email:string;
-    rating: number;
-    dateRegistered: Date;
-    exerience: number;
-    position: string
+  id: string | undefined;
+  login: string | undefined;
+  name: string | undefined;
+  surname: string | undefined;
+  phoneNumber: string | undefined
+  email: string | undefined;
+  rating: number | undefined;
+  dateRegistered: Date | undefined;
+  experience: number | undefined;
+  position: string | undefined
 }
 
-export class Question{
-    id: string;
-    topic: string;
-    body: string;
-    dateCreated: Date;
-    lastActivity: Date;
-    creator: User;
-    opened: boolean;
-    answers: Answer[]
+export class Question {
+  id: string | undefined;
+  topic: string | undefined;
+  body: string | undefined;
+  dateCreated: Date | undefined;
+  lastActivity: Date | undefined;
+  creator: User | undefined;
+  opened: boolean | undefined;
+  answers: Answer[] | undefined
 }
 
-export class Answer{
-    id: string;
-    question: Question;
-    body:string;
-    dateCreated: Date;
-    creator: User;
-    users: User[];
+export class Answer {
+  id: string | undefined;
+  question: Question | undefined;
+  body: string | undefined;
+  dateCreated: Date | undefined;
+  creator: User | undefined;
+  users: User[] | undefined;
 }
 
-export class AnswerLiker{
-    id: string;
-    user: User;
-    answer: Answer
+export class AnswerLiker {
+  id: string | undefined;
+  user: User | undefined;
+  answer: Answer | undefined
 }

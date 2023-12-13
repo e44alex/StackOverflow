@@ -1,51 +1,48 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Answer, Question, User } from './Model';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Answer, Question, User} from './Model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DataServiceService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   getQuestions(): Promise<Question[]> {
     console.log('getQuestions');
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.http
         .get('https://localhost:44360/api/Questions')
-        .subscribe((data: Question[]) => {
-          return resolve(data);
-        });
+        .subscribe(value => resolve(value as Question[]))
     });
   }
 
   getQuestion(id: string): Promise<Question> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.http
         .get('https://localhost:44360/api/Questions/' + id)
-        .subscribe((data: Question) => {
-          return resolve(data);
-        });
+        .subscribe((value) => resolve(value as Question));
     });
   }
 
   getAnswers(): Promise<Answer[]> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.http
         .get('https://localhost:44360/api/Answers')
-        .subscribe((data: Answer[]) => {
-          return resolve(data);
+        .subscribe((value) => {
+          return resolve(value as Answer[]);
         });
     });
   }
 
   getAnswer(id: string): Promise<Answer> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.http
         .get('https://localhost:44360/api/Questions/' + id)
-        .subscribe((data: Answer) => {
-          return resolve(data);
+        .subscribe((value) => {
+          return resolve(value as Answer);
         });
     });
   }
@@ -71,11 +68,11 @@ export class DataServiceService {
   }
 
   getUser(id: string): Promise<User> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.http
         .get('https://localhost:44360/api/Users/' + id)
-        .subscribe((data: User) => {
-          return resolve(data);
+        .subscribe((value) => {
+          return resolve(value as User);
         });
     });
   }
@@ -94,11 +91,8 @@ export class DataServiceService {
         headers
       )
       .subscribe({
-        next: (data) => {
-          console.log(data);
-        },
         error: (error) => {
-          console.log(error);
+          console.error(error); // TODO: add toast messages
         },
       });
   }
@@ -126,7 +120,7 @@ export class DataServiceService {
       });
   }
 
-  updateUser(user: User, token:string){
+  updateUser(user: User, token: string) {
     const headers = {
       headers: new HttpHeaders({
         accept: '*/*',

@@ -1,21 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-register-form',
   templateUrl: './register-form.component.html',
   styleUrls: ['./register-form.component.css']
 })
-export class RegisterFormComponent implements OnInit {
+export class RegisterFormComponent {
 
-  name:string;
-  surname:string;
-  password:string;
-  email:string;
-  passwConfirm: string;
+  name: string | undefined;
+  surname: string | undefined;
+  password: string | undefined;
+  email: string | undefined;
+  passwordConfirm: string | undefined;
 
-  constructor() { }
-
-  ngOnInit(): void {
+  constructor() {
   }
 
 }

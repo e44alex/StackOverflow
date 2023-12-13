@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
-import { AuthServiceService } from '../Shared/auth-service.service';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {CookieService} from 'ngx-cookie-service';
+import {AuthServiceService} from '../Shared/auth-service.service';
 
 @Component({
   selector: 'app-login-partial',
@@ -10,28 +10,29 @@ import { AuthServiceService } from '../Shared/auth-service.service';
 })
 export class LoginPartialComponent implements OnInit {
 
-  static email:string;
-  static id:string;
-  static authenticated:boolean;
+  static email: string;
+  static id: string;
+  static authenticated: boolean;
 
-    constructor(private cookieService: CookieService,
-    private authService: AuthServiceService,
-    private router: Router) { }
+  constructor(private cookieService: CookieService,
+              private authService: AuthServiceService,
+              private router: Router) {
+  }
 
   ngOnInit(): void {
 
     LoginPartialComponent.authenticated = (this.cookieService.check('token') && this.cookieService.check('username'));
     LoginPartialComponent.email = this.cookieService.get('username')
-    
-    this.authService.getId(LoginPartialComponent.email).then((value:string)=>{
+
+    this.authService.getId(LoginPartialComponent.email).then((value: string) => {
       LoginPartialComponent.id = value
     })
     console.log("login partial init");
-    
+
   }
 
-  OnLogout(){
-    LoginPartialComponent.authenticated =false;
+  OnLogout() {
+    LoginPartialComponent.authenticated = false;
     LoginPartialComponent.email = "";
     LoginPartialComponent.id = "";
     this.cookieService.delete('token');
@@ -39,14 +40,15 @@ export class LoginPartialComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
-  get getAuth(){
+  get getAuth() {
     return LoginPartialComponent.authenticated;
   }
 
-  get getEmail(){
+  get getEmail() {
     return LoginPartialComponent.email;
   }
-  get getID(){
+
+  get getID() {
     return LoginPartialComponent.id;
   }
 
