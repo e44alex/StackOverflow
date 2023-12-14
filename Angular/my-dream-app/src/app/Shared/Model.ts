@@ -23,7 +23,7 @@ export class Question {
 }
 
 export class Answer {
-  id: string | undefined;
+  id!: string;
   question: Question | undefined;
   body: string | undefined;
   dateCreated: Date | undefined;

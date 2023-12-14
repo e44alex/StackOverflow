@@ -1,7 +1,7 @@
 <hr>
 <div class="container bootstrap snippet">
 
-  <div class="row">
+  <div *ngIf="user" class="row">
     <div class="col-sm-3">
       <!--left col-->
       <div class="row">
@@ -39,7 +39,7 @@
                 </label>
                 <input [disabled]="true" type="email" class="form-control" name="email" id="email"
                        placeholder="you@email.com"
-                       title="Enter your e-mail." [(ngModel)]="user?.email">
+                       title="Enter your e-mail." [(ngModel)]="user.email">
               </div>
             </div>
 
@@ -49,7 +49,7 @@
                   <h2 class="text-white">First name</h2>
                 </label>
                 <input type="text" class="form-control" name="first_name" id="first_name" placeholder="first name"
-                       title="enter your first name if any." [(ngModel)]="user?.name" [disabled]="!isOwner">
+                       title="enter your first name if any." [(ngModel)]="user.name" [disabled]="!isOwner">
               </div>
             </div>
 
@@ -59,7 +59,7 @@
                   <h2 class="text-white">Last name</h2>
                 </label>
                 <input type="text" class="form-control" name="last_name" id="last_name" placeholder="last name"
-                       title="enter your last name if any." [(ngModel)]="user?.surname" [disabled]="!isOwner">
+                       title="enter your last name if any." [(ngModel)]="user.surname" [disabled]="!isOwner">
               </div>
             </div>
 
@@ -69,7 +69,8 @@
                   <h2 class="text-white"> Phone</h2>
                 </label>
                 <input type="text" class="form-control" name="phone" id="phone" placeholder="enter phone"
-                       title="enter your phone number if any." [(ngModel)]="user?.phoneNumber" [disabled]="!isOwner">
+                       title="enter your phone number if any." [(ngModel)]="user.phoneNumber"
+                       [disabled]="!isOwner">
               </div>
             </div>
 
@@ -79,7 +80,7 @@
                   <h2 class="text-white"> Position</h2>
                 </label>
                 <input type="text" class="form-control" name="pos" id="pos" placeholder="enter phone"
-                       title="enter your phone number if any." [(ngModel)]="user?.position" [disabled]="!isOwner">
+                       title="enter your phone number if any." [(ngModel)]="user.position" [disabled]="!isOwner">
               </div>
             </div>
 
@@ -89,7 +90,7 @@
                   <h2 class="text-white"> Experience</h2>
                 </label>
                 <input type="number" step="0.5" class="form-control" name="exp" id="exp" placeholder="enter phone"
-                       title="enter your phone number if any." [(ngModel)]="user?.experience" [disabled]="!isOwner">
+                       title="enter your phone number if any." [(ngModel)]="user.experience" [disabled]="!isOwner">
               </div>
             </div>
 
@@ -117,9 +118,9 @@
               <label for="rating">
               </label>
               <div class="progress">
-                <div id="rating" class="progress-bar" role="progressbar" [ngStyle]="{'width': user?.rating}"
+                <div *ngIf="user.rating" id="rating" class="progress-bar" role="progressbar" [ngStyle]="{'width': user.rating}"
                      aria-valuemin="0"
-                     aria-valuemax="100">{{ user?.rating }}
+                     aria-valuemax="100">{{ user.rating }}
                 </div>
               </div>
             </div>

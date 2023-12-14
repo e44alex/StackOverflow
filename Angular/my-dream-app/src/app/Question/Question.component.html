@@ -19,16 +19,18 @@
     <div class="card-body">
       {{ question.body }}
     </div>
-    <div class="card-footer">Created by: <a>{{ question.creator.login }}</a> on {{ question.dateCreated }}</div>
+    <div *ngIf="question.creator" class="card-footer">Created by: <a>{{ question.creator.login }}</a>
+      on {{ question.dateCreated }}
+    </div>
   </div>
   <div>
-    <h3>
+    <h3 *ngIf="question.answers">
       <p class="text-white"><b>{{ question.answers.length }} answers</b></p>
     </h3>
 
     <div class="mt-5" *ngFor="let answer of question.answers">
-      <div class="card text-white m-2 bg-dark">
-        <div class="card-header">
+      <div *ngIf="answer" class="card text-white m-2 bg-dark">
+        <div *ngIf="answer.creator" class="card-header">
           <a href="/User/{{answer.creator.id}}">{{ answer.creator.login }}</a>
         </div>
         <div class="card-body">{{ answer.body }}</div>
@@ -38,7 +40,7 @@
               Created on {{ answer.dateCreated }}
             </div>
             <div class="col-sm-2">
-              <p>
+              <p *ngIf="answer.users">
                 {{ answer.users.length }} Liked this
               </p>
             </div>

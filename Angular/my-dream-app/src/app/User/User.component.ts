@@ -61,7 +61,7 @@ export class UserComponent implements OnInit {
     this.router
       .navigate(['/'])
       .then(() => {
-        return this.router.navigate(['/User', this.user?.id]);
+        return this.router.navigate(['/User', this.user?.id || 0]);
       });
   }
 
