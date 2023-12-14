@@ -5,9 +5,6 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Server.IIS.Core;
-using Microsoft.IdentityModel.JsonWebTokens;
 using StackOverflowWebApi.Models;
 
 namespace StackOverflowWebApi.Services

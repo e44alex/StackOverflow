@@ -1,5 +1,3 @@
-using System;
-
 namespace ApiFrontEnd.Models
 {
     public class ErrorViewModel

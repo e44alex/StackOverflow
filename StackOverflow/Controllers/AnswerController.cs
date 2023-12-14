@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -33,8 +31,6 @@ namespace StackOverflow.Controllers
                     answer.Creator = await _userManager.FindByNameAsync(User.Identity.Name);
                     answer.Id = new Guid();
                 }
-
-               
 
                 return RedirectToAction(nameof(Index), nameof(QuestionController));
             }
