@@ -16,26 +16,28 @@ import {RegisterFormComponent} from './register-form/register-form.component';
 import {LoginFormComponent} from './login-form/login-form.component';
 import {CookieService} from 'ngx-cookie-service';
 import {AddQuestionComponent} from './add-question/add-question.component';
+import {SearchComponent} from "./search/search.component";
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, QuestionComponent, UserComponent, LoginPartialComponent, RegisterFormComponent, LoginFormComponent, AddQuestionComponent],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    NgbModule,
-    RouterModule.forRoot([
-      {path: '', component: HomeComponent},
-      {path: 'Home/:searchText', component: HomeComponent},
-      {path: 'Question/:id', component: QuestionComponent},
-      {path: 'User/:id', component: UserComponent},
-      {path: 'Login', component: LoginFormComponent},
-      {path: 'Register', component: RegisterFormComponent},
-      {path: 'AskQuestion', component: AddQuestionComponent},
-    ]),
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        NgbModule,
+        RouterModule.forRoot([
+            {path: '', component: HomeComponent},
+            {path: 'Home/:searchText', component: HomeComponent},
+            {path: 'Question/:id', component: QuestionComponent},
+            {path: 'User/:id', component: UserComponent},
+            {path: 'Login', component: LoginFormComponent},
+            {path: 'Register', component: RegisterFormComponent},
+            {path: 'AskQuestion', component: AddQuestionComponent},
+        ]),
+        SearchComponent,
+    ],
   providers: [CookieService],
 
   bootstrap: [AppComponent],

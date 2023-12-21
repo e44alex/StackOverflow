@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using StackOverflowWebApi.Models;
 using StackOverflowWebApi.Services;
 
-namespace ApiFrontEnd
+namespace ApiFrontEnd.Pages
 {
     public class IndexModel : PageModel
     {
-        protected readonly IApiClient _apiClient;
+        private readonly IApiClient _apiClient;
 
         public List<Question> Questions { get; set; }
 
@@ -18,32 +18,10 @@ namespace ApiFrontEnd
 
         public MyPageViewModel PageViewModel { get; set; }
 
-        public class MyPageViewModel
+        public class MyPageViewModel(int count, int pageNumber, int pageSize)
         {
-            public int PageNumber { get; private set; }
-            public int TotalPages { get; private set; }
-
-            public MyPageViewModel(int count, int pageNumber, int pageSize)
-            {
-                PageNumber = pageNumber;
-                TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-            }
-
-            public bool HasPreviousPage
-            {
-                get
-                {
-                    return (PageNumber > 1);
-                }
-            }
-
-            public bool HasNextPage
-            {
-                get
-                {
-                    return (PageNumber < TotalPages);
-                }
-            }
+            private int PageNumber { get; } = pageNumber;
+            private int TotalPages { get; } = (int)Math.Ceiling(count / (double)pageSize);
         }
 
 
@@ -52,17 +30,14 @@ namespace ApiFrontEnd
             _apiClient = apiClient;
         }
 
-        public async Task OnGet(string? searchText="")
+        public async Task OnGet(string? searchText = "")
         {
-
             Questions = await _apiClient.GetQuestionsAsync();
             Questions = Questions.OrderByDescending(x => x.LastActivity).ToList();
             if (!String.IsNullOrEmpty(searchText))
             {
                 Questions = Questions.Where(x => x.Topic.Contains(searchText)).ToList();
             }
-
         }
-
     }
 }

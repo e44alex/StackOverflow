@@ -48,14 +48,10 @@ namespace StackOverflowWebApi.Controllers
         public async Task<List<Answer>> GetAnswersByQuestion(Guid id)
         {
             return await _context.Answers
-                .Include(a =>a.Question)
+                .Include(a => a.Question)
                 .Where(a => a.Question.Id == id)
                 .ToListAsync();
         }
-
-        // PUT: api/Answers/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
 
         [Authorize]
         [HttpPut("{id}")]
@@ -92,22 +88,22 @@ namespace StackOverflowWebApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Answers
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<Answer>> PostAnswer(Answer answer)
         {
             var question = await _context.Questions.FindAsync(answer.Question.Id);
-            question.LastActivity= DateTime.Now;
+            if (question != null)
+            {
+                question.LastActivity = DateTime.Now;
 
-            answer.DateCreated = DateTime.Now;
-            answer.Question = question;
+                answer.DateCreated = DateTime.Now;
+                answer.Question = question;
+            }
+
             answer.Id = Guid.NewGuid();
-            answer.Creator = await _context.FindAsync<User>(answer.Creator.Id);
-            
+            if (answer.Creator != null) answer.Creator = await _context.FindAsync<User>(answer.Creator.Id);
+
             _context.Add(answer);
             await _context.SaveChangesAsync();
 
@@ -129,13 +125,15 @@ namespace StackOverflowWebApi.Controllers
 
             return answer;
         }
+
         [Authorize]
         [HttpGet("/like")]
         public async Task<IActionResult> LikeAnswer(Guid answerId, string username)
         {
             var answer = await _context.Answers
                 .Include(x => x.Question)
-                .FirstOrDefaultAsync(x =>x.Id == answerId);
+                .Include(answer => answer.Creator)
+                .FirstOrDefaultAsync(x => x.Id == answerId);
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == username);
 
             if (answer.Creator.Id == user.Id)
@@ -150,21 +148,21 @@ namespace StackOverflowWebApi.Controllers
                 User = user
             });
 
-            user.Rating = await SetUserRatingAsync(user.Login);
+            if (user.Login != null) user.Rating = SetUserRatingAsync(user.Login);
 
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private async Task<int?> SetUserRatingAsync(string userName)
+        private int SetUserRatingAsync(string userName)
         {
             var totalQuestion = _context.Questions.Count(x => x.Creator.Email == userName);
-            var totalAnswers = _context.Answers.Count(x => x.Creator.Email == userName);
-            var likedAnswers = _context.Answers.Count(x => x.Creator.Email == userName && x.Users.Count > 0);
+            var totalAnswers = _context.Answers.Count(x => x.Creator != null && x.Creator.Email == userName);
+            var likedAnswers = _context.Answers.Count(x => x.Creator != null && x.Creator.Email == userName && x.Users.Count > 0);
 
             float result = ((float)(totalQuestion + likedAnswers)) / (totalAnswers + totalQuestion);
-            return (int?)Math.Round(result * 100);
+            return (int)Math.Round(result * 100);
         }
 
         private bool AnswerExists(Guid id)

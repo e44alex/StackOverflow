@@ -1,0 +1,5 @@
+<form class="d-flex" role="search">
+  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"
+         [(ngModel)]="searchText">
+  <button class="btn btn-outline-success" type="submit" [routerLink]="['Home', searchText]">Search</button>
+</form>

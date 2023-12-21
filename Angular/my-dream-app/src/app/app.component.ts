@@ -1,18 +1,16 @@
-import { Component } from '@angular/core';
-import { LoginPartialComponent } from './login-partial/login-partial.component';
+import {Component} from '@angular/core';
+import {LoginPartialComponent} from './login-partial/login-partial.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
   title = 'my-dream-app';
 
-  searchText: string = "";
-
-  get getAuth(){
-    return LoginPartialComponent.authenticated
+  get getAuth() {
+    return LoginPartialComponent.authenticated // TODO: this should be not inside of a component
   }
 
 }

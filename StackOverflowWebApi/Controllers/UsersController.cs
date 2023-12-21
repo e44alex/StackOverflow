@@ -11,27 +11,20 @@ namespace StackOverflowWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController(AppDbContext context) : ControllerBase
     {
-        private readonly AppDbContext _context;
-
-        public UsersController(AppDbContext context)
-        {
-            _context = context;
-        }
-
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            return await context.Users.ToListAsync();
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(Guid id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await context.Users.FindAsync(id);
 
             if (user == null)
             {
@@ -45,7 +38,7 @@ namespace StackOverflowWebApi.Controllers
         [HttpGet("byName/{username}")]
         public async Task<ActionResult<User>> GetUser(string username)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == username);
+            var user = await context.Users.FirstOrDefaultAsync(x => x.Email == username);
 
             if (user == null)
             {
@@ -56,11 +49,11 @@ namespace StackOverflowWebApi.Controllers
         }
 
         [HttpGet("getId/{username}")]
-        public async Task<ActionResult<Guid>> GetId(string username)
+        public async Task<ActionResult<Guid?>> GetId(string username)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == username);
+            var user = await context.Users.FirstOrDefaultAsync(x => x.Email == username);
 
-            return user.Id;
+            return user?.Id;
         }
 
 
@@ -78,7 +71,7 @@ namespace StackOverflowWebApi.Controllers
             }
 
             //password changed
-            var prevPassword = _context.Users.FirstOrDefault(u => u.Id == id)?.PasswordHash;
+            var prevPassword = context.Users.FirstOrDefault(u => u.Id == id)?.PasswordHash;
             if (user.PasswordHash != prevPassword)
             {
                 user.PasswordHash = AuthController.HashPassword(user.PasswordHash);
@@ -88,7 +81,7 @@ namespace StackOverflowWebApi.Controllers
 
             try
             {
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -111,14 +104,14 @@ namespace StackOverflowWebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
-            if (_context.Users.Any(u=> u.Email == user.Email))
+            if (context.Users.Any(u=> u.Email == user.Email))
             {
                 return Forbid();
             }
 
             user.PasswordHash = AuthController.HashPassword(user.PasswordHash);
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            context.Users.Add(user);
+            await context.SaveChangesAsync();
 
             return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
@@ -127,21 +120,21 @@ namespace StackOverflowWebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUser(Guid id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await context.Users.FindAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
+            context.Users.Remove(user);
+            await context.SaveChangesAsync();
 
             return user;
         }
 
         private bool UserExists(Guid id)
         {
-            return _context.Users.Any(e => e.Id == id);
+            return context.Users.Any(e => e.Id == id);
         }
     }
 }

@@ -1,0 +1,21 @@
+.app-container {
+  background-color: rgba(22, 22, 22, 0.651);
+  width: 100%;
+}
+
+.nopadding {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.app-logo {
+  flex: 1;
+}
+
+.navbar-collapse {
+  width: auto;
+}
+
+.actions {
+  display: flex;
+}

@@ -4,7 +4,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,26 +15,19 @@ namespace StackOverflowWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : Controller
+    public class AuthController(AppDbContext context) : Controller
     {
-        private readonly AppDbContext _context;
-
-        public AuthController(AppDbContext context)
-        {
-            _context = context;
-        }
-
         [HttpGet("/token")]
         public IActionResult Token(string username, string password)
         {
             var identity = GetIdentity(username, password);
-            if (identity == null)
+            if (identity is null)
             {
-                return BadRequest(new {errorText = "Invalid username or password"});
+                return BadRequest(new { errorText = "Invalid username or password" });
             }
 
             var now = DateTime.UtcNow;
-            // создаем JWT-токен
+
             var jwt = new JwtSecurityToken(
                 issuer: AuthOptions.ISSUER,
                 audience: AuthOptions.AUDIENCE,
@@ -52,57 +44,48 @@ namespace StackOverflowWebApi.Controllers
                 username = identity.Name
             };
 
-            HttpContext.Response.Headers.Append("token",encodedJwt);
+            HttpContext.Response.Headers.Append("token", encodedJwt);
 
-            
 
             return Json(response);
         }
 
         [Authorize]
         [HttpGet("/checkLogin")]
-        public async Task<IActionResult> CheckLogin(string userName)
+        public IActionResult CheckLogin(string userName)
         {
-            
             return Ok("You are authorized");
         }
 
         [Authorize]
         [HttpGet("/logOut")]
-        public async Task<IActionResult> LogOut(string userName)
+        public IActionResult LogOut(string userName)
         {
             return Ok("You are unauthorized");
         }
 
         private ClaimsIdentity GetIdentity(string username, string password)
         {
-            User user = _context.Users.FirstOrDefault(x => x.Email == username);
+            var user = context.Users.FirstOrDefault(x => x.Email == username);
 
-            if (user != null)
+            if (user == null) return null;
+
+            if (!VerifyHashedPassword(user.PasswordHash, password)) return null;
+
+            var claims = new List<Claim>
             {
-                
+                new(ClaimsIdentity.DefaultNameClaimType, user.Email),
+                new(ClaimsIdentity.DefaultRoleClaimType, "user")
+            };
 
-                if (VerifyHashedPassword(user.PasswordHash, password))
-                {
-                    var claims = new List<Claim>
-                    {
-                        new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
-                        new Claim(ClaimsIdentity.DefaultRoleClaimType, "user")
-                    };
+            ClaimsIdentity claimsIdentity =
+                new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
+                    ClaimsIdentity.DefaultRoleClaimType);
 
-                    ClaimsIdentity claimsIdentity =
-                        new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
-                            ClaimsIdentity.DefaultRoleClaimType);
-
-                    return claimsIdentity;
-                }
-            }
-
-            // если пользователя не найдено
-            return null;
+            return claimsIdentity;
         }
 
-        public static string HashPassword(string password)
+        public static string? HashPassword(string? password)
         {
             byte[] salt;
             byte[] buffer2;
@@ -123,7 +106,7 @@ namespace StackOverflowWebApi.Controllers
             return Convert.ToBase64String(dst);
         }
 
-        public static bool VerifyHashedPassword(string hashedPassword, string password)
+        public static bool VerifyHashedPassword(string? hashedPassword, string password)
         {
             byte[] buffer4;
             if (hashedPassword == null)
@@ -131,10 +114,7 @@ namespace StackOverflowWebApi.Controllers
                 return false;
             }
 
-            if (password == null)
-            {
-                throw new ArgumentNullException("password");
-            }
+            ArgumentNullException.ThrowIfNull(password);
 
             byte[] src = Convert.FromBase64String(hashedPassword);
             if ((src.Length != 0x31) || (src[0] != 0))
@@ -154,16 +134,11 @@ namespace StackOverflowWebApi.Controllers
             return ByteArraysEqual(buffer3, buffer4);
         }
 
-        public static bool ByteArraysEqual(byte[] a1, byte[] a2)
+        private static bool ByteArraysEqual(byte[] a1, byte[] a2)
         {
-            if (a1.Length != a2.Length)
-                return false;
+            if (a1.Length != a2.Length) return false;
 
-            for (int i = 0; i < a1.Length; i++)
-                if (a1[i] != a2[i])
-                    return false;
-
-            return true;
+            return !a1.Where((t, i) => t != a2[i]).Any();
         }
     }
 }
