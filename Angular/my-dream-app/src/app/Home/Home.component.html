@@ -13,7 +13,7 @@
     <div class="card text-white mt-2 bg-dark" >
       <div class="card-header">
         <h1 class="card-title">
-          <a [routerLink]="['/Question', question.id]">
+          <a [routerLink]="['/question', question.id]">
             {{question.topic}}
           </a>
         </h1>
@@ -22,7 +22,7 @@
         <p class="card-text">{{question.body}}</p>
       </div>
       <div class="card-footer">
-        Created by <a [routerLink]="['/User', question.creator?.id || 0]">{{question.creator?.login}}</a> On {{question.dateCreated}}
+        Created by <a [routerLink]="['/user', question.creator?.id || 0]">{{question.creator?.login}}</a> On {{question.dateCreated}}
       </div>
     </div>
   </div>

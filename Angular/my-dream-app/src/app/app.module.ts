@@ -17,30 +17,44 @@ import {LoginFormComponent} from './login-form/login-form.component';
 import {CookieService} from 'ngx-cookie-service';
 import {AddQuestionComponent} from './add-question/add-question.component';
 import {SearchComponent} from "./search/search.component";
+import {SingInPageComponent} from "./sing-in-page/sing-in-page.component";
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, QuestionComponent, UserComponent, LoginPartialComponent, RegisterFormComponent, LoginFormComponent, AddQuestionComponent],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        FormsModule,
-        HttpClientModule,
-        BrowserAnimationsModule,
-        NgbModule,
-        RouterModule.forRoot([
-            {path: '', component: HomeComponent},
-            {path: 'Home/:searchText', component: HomeComponent},
-            {path: 'Question/:id', component: QuestionComponent},
-            {path: 'User/:id', component: UserComponent},
-            {path: 'Login', component: LoginFormComponent},
-            {path: 'Register', component: RegisterFormComponent},
-            {path: 'AskQuestion', component: AddQuestionComponent},
-        ]),
-        SearchComponent,
-    ],
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    QuestionComponent,
+    UserComponent,
+    LoginPartialComponent,
+    RegisterFormComponent,
+    LoginFormComponent,
+    AddQuestionComponent,
+    SingInPageComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    NgbModule,
+    RouterModule.forRoot([
+      {path: '', component: HomeComponent},
+      {path: 'home/:searchText', component: HomeComponent},
+      {path: 'question/:id', component: QuestionComponent},
+      {path: 'user/:id', component: UserComponent},
+      {path: 'login', component: SingInPageComponent},
+      {path: 'register', component: RegisterFormComponent},
+      {path: 'askQuestion', component: AddQuestionComponent},
+    ]),
+    SearchComponent,
+  ],
   providers: [CookieService],
 
   bootstrap: [AppComponent],
+  exports: [
+    LoginFormComponent
+  ]
 })
 export class AppModule {
 }

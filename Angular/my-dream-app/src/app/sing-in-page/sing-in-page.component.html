@@ -1,0 +1,23 @@
+<form method="post" #loginForm="ngForm" (ngSubmit)="OnSubmit(loginForm)">
+  <div class="card w-25 text-bg-dark mb-3 m-lg-auto">
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs text-bg-dark">
+        <li class="nav-item w-50">
+          <a class="nav-link text-bg-dark active" aria-current="true" href="#">Sign In</a>
+        </li>
+        <li class="nav-item w-50">
+          <a class="nav-link text-bg-dark" aria-current="true" href="#">Sign Up</a>
+        </li>
+      </ul>
+    </div>
+    <div class="card-body">
+      <div *ngIf="formType === 'login'">
+        <app-login-form></app-login-form>
+      </div>
+    </div>
+    <div class="card-footer text-center">
+      <button type="submit" class="btn btn-primary mb-1 mt-1 w-25">Login</button>
+    </div>
+  </div>
+</form>
+
